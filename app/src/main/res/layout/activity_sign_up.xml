@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SignUp"
+    android:background="@color/white_F0F4F2">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shape"
+        android:src="@drawable/shape"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome Onboard !"
+        android:id="@+id/welcome"
+        android:transitionName="splash_image"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Let’s help you meet up your tasks"
+        android:id="@+id/text11"
+        android:transitionName="splash_text"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:layout_marginTop="12dp"
+        android:textSize="16sp" />
+
+    <EditText
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:hint="Enter your username"
+        android:layout_marginTop="40dp"
+        android:textSize="16sp"
+        android:background="@drawable/rectangle2"/>
+
+    <EditText
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:hint="Enter your email"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:background="@drawable/rectangle2"/>
+
+    <EditText
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:hint="Enter password"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:background="@drawable/rectangle2"/>
+
+    <EditText
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:hint="Confirm password"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:background="@drawable/rectangle2"/>
+
+    <Button
+        android:layout_width="360dp"
+        android:layout_height="60dp"
+        android:background="@drawable/rectangle1"
+        android:layout_marginTop="35dp"
+        android:text="Sign Up"
+        android:layout_gravity="center_horizontal"
+        android:textSize="25sp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Already have an Account?"/>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:minWidth="48dp"
+                android:text="Sign in"
+                android:textColor="@color/forgotpassword"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

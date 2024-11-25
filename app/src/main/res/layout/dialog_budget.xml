@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@color/white">
+    <TextView
+        android:id="@+id/dialog_budget_tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Budget"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+    <ImageView
+        android:id="@+id/dialog_budget_iv_error"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@mipmap/ih_close"
+        android:layout_alignParentRight="true"/>
+    <TextView
+        android:id="@+id/dialog_budget_tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RM "
+        android:layout_below="@id/dialog_budget_tv1"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/dialog_budget_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/dialog_budget_tv2"
+        android:layout_alignBaseline="@id/dialog_budget_tv2"
+        android:hint="99.99"
+        android:inputType="numberDecimal"
+        android:background="@color/white"
+        android:paddingVertical="14dp"
+        android:paddingHorizontal="8dp">
+    <requestFocus/>
+</EditText>
+
+<androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/dialog_budget_btn_ensure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_budget_tv2"
+        android:layout_marginTop="20dp"
+        android:text="Confirm"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:background="@drawable/main_recordbtn_bg"
+        android:textColor="@color/white" />
+</RelativeLayout>

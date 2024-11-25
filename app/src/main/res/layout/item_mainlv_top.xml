@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/grey_f3f3f3">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/item_mainlv_top_tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/monthly_spending"
+            android:textColor="@color/grey_808080" />
+
+        <TextView
+            android:id="@+id/item_mainlv_top_tv_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_mainlv_top_tv1"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/monthly_spending_amount"
+            android:textColor="@color/black"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/item_main_top_Iv_hide"
+            android:layout_width="50dp"
+            android:layout_height="26dp"
+            android:layout_alignTop="@id/item_mainlv_top_tv_out"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/ih_show" />
+
+        <TextView
+            android:id="@+id/item_mainlv_top_tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_mainlv_top_tv_out"
+            android:text="@string/monthly_income"
+            android:textColor="@color/grey_808080" />
+
+        <TextView
+            android:id="@+id/item_mainlv_top_tv_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_mainlv_top_tv_out"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/item_mainlv_top_tv2"
+            android:text="@string/monthly_income_amount"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/item_mainlv_top_tv_budget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/item_mainlv_top_tv_in"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:text="RM 0"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/item_mainlv_top_tv3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/item_mainlv_top_tv2"
+            android:layout_toLeftOf="@id/item_mainlv_top_tv_budget"
+            android:text="@string/budget"
+            android:textColor="@color/grey_808080" />
+
+        <TextView
+            android:id="@+id/item_mainlv_top_tv4"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/item_mainlv_top_tv2"
+            android:layout_marginLeft="120dp"
+            android:layout_marginTop="15dp"
+            android:drawablePadding="1dp"
+            app:drawableLeftCompat="@mipmap/ih_chart" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_mainlv_top_tv2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="21dp"
+            android:layout_toRightOf="@+id/item_mainlv_top_tv4"
+            android:text="@string/view_chart"
+            android:textColor="@color/green_006400" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_mainlv_top_tv_day"
+        android:text="Today's\nSpending - RM 0      Income - RM 0"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/grey_808080" />
+</LinearLayout>

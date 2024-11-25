@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_recordfrag_iv"
+        android:src="@mipmap/ic_other_fs"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_recordfrag_tv"
+        android:text="Other"
+        android:layout_marginTop="5dp"
+        android:textSize="12sp"
+        android:textColor="@color/grey_7D7D7D"
+        android:gravity="center"/>
+
+</LinearLayout>
