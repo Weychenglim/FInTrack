@@ -16,27 +16,29 @@
         android:src="@drawable/shape"/>
 
     <TextView
+        android:id="@+id/welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome Onboard !"
-        android:id="@+id/welcome"
-        android:transitionName="splash_image"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="22sp"
         android:layout_marginTop="20dp"
-        android:textStyle="bold"/>
+        android:text="Welcome Onboard !"
+        android:textAlignment="center"
+        android:textColor="@color/teal_700"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:transitionName="splash_image"
+        android:fontFamily="@font/appfont"/>
 
     <TextView
+        android:id="@+id/text11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Let’s help you meet up your tasks"
-        android:id="@+id/text11"
-        android:transitionName="splash_text"
-        android:textAlignment="center"
-        android:textColor="@color/black"
         android:layout_marginTop="12dp"
-        android:textSize="16sp" />
+        android:text="Let’s help you meet up your tasks"
+        android:textAlignment="center"
+        android:textColor="@color/green_006400"
+        android:textSize="23sp"
+        android:transitionName="splash_text"
+        android:fontFamily="@font/appfont"/>
 
     <EditText
         android:layout_width="360dp"

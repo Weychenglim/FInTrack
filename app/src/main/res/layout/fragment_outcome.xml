@@ -31,7 +31,6 @@
             android:text="Other"
             android:textSize="16sp"
             android:textStyle="bold" />
-
         <EditText
             android:id="@+id/frag_record_et_money"
             android:layout_width="wrap_content"
@@ -39,7 +38,10 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
             android:background="@color/white"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:hint="Enter Amount"
+            android:textSize="16sp"
+            android:textColor="@color/grey_7D7D7D"/>
     </RelativeLayout>
 
     <View
@@ -86,7 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/frag_record_tv_remark"
-            android:text="Add Remark"
+            android:hint="Add Remark"
             android:layout_toLeftOf="@+id/frag_record_tv_time"
             android:padding="10dp"/>
 

@@ -7,192 +7,253 @@ import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.fintrack.adapter.AccountAdapter;
 import com.example.fintrack.db.AccountItem;
 import com.example.fintrack.db.DBManager;
+import com.example.fintrack.history.HistoryFragment;
+import com.example.fintrack.history.ListHistoryFragment;
+import com.example.fintrack.history.ListHistoryFragmentExpend;
+import com.example.fintrack.history.ListHistoryFragmentIncome;
+import com.example.fintrack.history.SelectDateHistory;
 import com.example.fintrack.utils.BudgetDialog;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    ListView todayLv;
-    List<AccountItem>mDatas;
+public class MainActivity extends AppCompatActivity  {
 
-    AccountAdapter adapter;
+    public interface OnSearchQueryListener {
+        void onSearchQueryChanged(String query);
+    }
 
-    int year, month , day;
-
-    ImageView search;
-    ImageButton record, menu ;
-
-    View headerView;
-
-    TextView topOutTv, topInTv, topbudgetTv , topConTv;
-
-    ImageView topShowIv;
-
-    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        getWindow().setStatusBarColor(getResources().getColor(R.color.teal_200, getTheme()));
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        initTime();
-        initView();
-        preferences = getSharedPreferences("budget",MODE_PRIVATE);  /*This method retrieves and initialize a SharedPreferences instance that points to the file
-        named "budget" where data can be stored. If this file doesn’t exist, Android will create it. file is private to the app*/
-        todayLv = findViewById(R.id.main_lv);
-        addLVHeaderView();
-        mDatas = new ArrayList<>();
-        adapter = new AccountAdapter(this,mDatas);
-        todayLv.setAdapter(adapter);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        BottomNavigationView bottomNavView = findViewById(R.id.bottomNavigationView);
+        // Set the background of BottomNavigationView to null
+        // Get NavHostFragment directly and then get its NavController
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.NHFMain);
 
+        NavController navController = navHostFragment.getNavController();
+        NavigationUI.setupWithNavController(bottomNavView, navController);
+        Toolbar toolbar = findViewById(R.id.TBMainAct);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);   // the text on the tool bar is determined by the label in nav_graph
+        setupBottomNavMenu(navController);
     }
 
-    private void initView() {
-        todayLv = findViewById(R.id.main_lv);
-        search = findViewById(R.id.main_iv_search);
-        record = findViewById(R.id.main_btn_edit);
-        menu  = findViewById(R.id.main_btn_more);
-        search.setOnClickListener(this);
-        record.setOnClickListener(this);
-        menu.setOnClickListener(this);
-    }
-
-    private void addLVHeaderView() {
-        headerView = getLayoutInflater().inflate(R.layout.item_mainlv_top, null);
-        todayLv.addHeaderView(headerView);
-
-        topOutTv = headerView.findViewById(R.id.item_mainlv_top_tv_out);
-        topInTv = headerView.findViewById(R.id.item_mainlv_top_tv_in);
-        topbudgetTv = headerView.findViewById(R.id.item_mainlv_top_tv_budget);
-        topConTv = headerView.findViewById(R.id.item_mainlv_top_tv_day);
-        topShowIv = headerView.findViewById(R.id.item_main_top_Iv_hide);
-
-        topbudgetTv.setOnClickListener(this);
-        headerView.setOnClickListener(this);
-        topShowIv.setOnClickListener(this);
-    }
-
-    private void initTime() {
-        Calendar calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH)+1;
-        day = calendar.get(Calendar.DAY_OF_MONTH);
+    private void setupBottomNavMenu(NavController navController){
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+        NavigationUI.setupWithNavController(bottomNav,navController);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        loadDBData();
-        setTopTvShow();
-    }
-
-
-    private void setTopTvShow() {
-        double incomePerDay = DBManager.getSumMoneyPerDay(year, month, day, 1);
-        double expensePerDay= DBManager.getSumMoneyPerDay(year, month, day, 0);
-        String infoPerDay = "Today's\nSpending - RM " + String.format("%.2f" , expensePerDay) + "      Income - RM " + String.format("%.2f" , incomePerDay);
-        topConTv.setText(infoPerDay);
-        double incomePerMonth = DBManager.getSumMoneyPerMonth(year, month, 1);
-        double expensePerMonth = DBManager.getSumMoneyPerMonth(year, month, 0);
-        topInTv.setText("RM " + String.format("%.2f" , incomePerMonth));
-        topOutTv.setText("RM " + String.format("%.2f" , expensePerMonth));
-        float amount_update = preferences.getFloat("amount",0);
-        if(amount_update == 0){
-            topbudgetTv.setText("RM 0");
-        }else{
-            float final_amount = amount_update- (float)expensePerMonth;
-            topbudgetTv.setText("RM " + String.format("%.2f" , final_amount));
-        }
-    }
-
-    private void loadDBData() {
-        List<AccountItem> list = DBManager.getAccountListOneDayFromAccounttb(year, month,day);
-        mDatas.clear();
-        mDatas.addAll(list);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.main_iv_search){
-
-        }else if (v.getId() == R.id.main_btn_edit){
-            Intent it1 = new Intent(this, RecordActivity.class);
-            startActivity(it1);
-        }else if (v.getId() == R.id.main_btn_more){
-
-        }else if (v.getId() == R.id.item_main_top_Iv_hide){
-            toggleShow();
-        }else if (v.getId() == R.id.item_mainlv_top_tv_budget){
-            showBudgetDialog();
-        }
-    }
-
-    private void showBudgetDialog() {
-        BudgetDialog dialog = new BudgetDialog(this); // fragment use getContext() / requireContext()
-        dialog.show();
-        dialog.setDialogSize();
-        dialog.setOnConfirmListener(new BudgetDialog.onConfirmListener() {
-            @Override
-            public void onConfirm(double amount) {
-                SharedPreferences.Editor editor = preferences.edit();
-                /*SharedPreferences in Android is a lightweight storage mechanism that allows you to store small amounts of data in key-value pairs.
-                It’s typically used for storing user preferences, settings, or other data that needs to persist across app sessions, even after the app
-                is closed. SharedPreferences is ideal for simple data types like boolean, int, float, long, and String. Data stored in SharedPreferences
-                 remains available until it is specifically cleared.*/
-                editor.putFloat("amount",(float)amount);
-                editor.commit();
-
-                double spending = DBManager.getSumMoneyPerMonth(year,month,0);
-                double balance = amount-spending;
-                topbudgetTv.setText("RM " + String.format("%.2f" , balance));
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        NavController navController = Navigation.findNavController(this, R.id.NHFMain);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItem calendarItem = menu.findItem(R.id.action_calendar);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            // Check if the current destination is the Home fragment
+            if (destination.getId() == R.id.home) { // Replace with the actual ID of the Home fragment
+                searchItem.setVisible(true);
+                calendarItem.setVisible(false);// Show search button
+            } else if (destination.getId() == R.id.history) {
+                searchItem.setVisible(true);
+                calendarItem.setVisible(true);
+            }else if (destination.getId() == R.id.overview) {
+                    searchItem.setVisible(false);
+                    calendarItem.setVisible(true);
+            } else {
+                searchItem.setVisible(false);
+                calendarItem.setVisible(false);// Hide search button
             }
         });
+        SharedViewModel viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
+        calendarItem.setOnMenuItemClickListener(item -> {
+            SelectDateHistory dialog = new SelectDateHistory(this);
+            dialog.show();
+
+            dialog.setOnEnsureListener((time, year, month, day) -> {
+                viewModel.setDateData(new SharedViewModel.DateData(time, year, month, day));
+            });
+
+            return true;
+        });
+
+        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+        searchView.setQueryHint("Type a category");
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // No changes needed when expanded
+                calendarItem.setVisible(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                    // Check if the current destination is the Home fragment
+                    if (destination.getId() == R.id.history) { // Replace with the actual ID of the Home fragment
+                        calendarItem.setVisible(true);// Show search button
+                    }});
+                // When collapsed, clear the search query and reset the list
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.NHFMain);
+                if (currentFragment instanceof NavHostFragment) {
+                    Fragment navFragment = ((NavHostFragment) currentFragment).getChildFragmentManager().getPrimaryNavigationFragment();
+                    if (navFragment instanceof Main_Fragment) {
+                        ((Main_Fragment) navFragment).onSearchQueryChanged(""); // Reset the list
+                    }
+                }
+                if (currentFragment instanceof NavHostFragment) {
+                    Fragment navFragment = ((NavHostFragment) currentFragment).getChildFragmentManager().getPrimaryNavigationFragment();
+
+                    if (navFragment instanceof HistoryFragment) {
+                        HistoryFragment historyFragment = (HistoryFragment) navFragment;
+                        FragmentManager childFragmentManager = historyFragment.getChildFragmentManager();
+
+                        // Get the current tab index
+                        ViewPager viewPager = historyFragment.getView().findViewById(R.id.record_vp_history);
+                        int currentTabIndex = viewPager.getCurrentItem();
+                        Log.d("currenttab", String.valueOf(currentTabIndex));
+
+                        // Retrieve the correct fragment using the adapter's tag
+                        String fragmentTag = historyFragment.getAdapter().getFragmentTag(currentTabIndex);
+                        Log.d("currenttab", fragmentTag);
+                        Fragment currentTabFragment = childFragmentManager.findFragmentByTag(fragmentTag);
+                        Log.d("CurrentTab", "Current Tab: " + (currentTabFragment != null ? currentTabFragment.getClass().getSimpleName() : "null"));
+                        if (currentTabFragment == null) {
+                            currentTabFragment = historyFragment.getAdapter().getItem(currentTabIndex);
+                        }
+
+                        if (currentTabFragment instanceof ListHistoryFragmentExpend) {
+                            Log.d("Fragment Check", "This is ListHistoryFragmentExpend");
+                            ((ListHistoryFragmentExpend) currentTabFragment).onSearchQueryChanged("");
+                            currentTabFragment = historyFragment.getAdapter().getItem(currentTabIndex ==0 ? 1 :0);
+                            ((ListHistoryFragmentIncome) currentTabFragment).onSearchQueryChanged("");
+                        } else if (currentTabFragment instanceof ListHistoryFragmentIncome) {
+                            Log.d("Fragment Check", "This is ListHistoryFragmentIncome");
+                            ((ListHistoryFragmentIncome) currentTabFragment).onSearchQueryChanged("");
+                            currentTabFragment = historyFragment.getAdapter().getItem(currentTabIndex ==0 ? 1 :0);
+                            ((ListHistoryFragmentExpend) currentTabFragment).onSearchQueryChanged("");
+                        }
+                    }
+                }
+
+                return true;
+            }
+        });
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Get the current fragment from the NavHostFragment
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.NHFMain);
+
+                if (currentFragment instanceof NavHostFragment) {
+                    Fragment navFragment = ((NavHostFragment) currentFragment).getChildFragmentManager().getPrimaryNavigationFragment();
+
+                    if (navFragment instanceof Main_Fragment) {
+                        ((Main_Fragment) navFragment).onSearchQueryChanged(newText);
+                    }
+                }
+                if (currentFragment instanceof NavHostFragment) {
+                    Fragment navFragment = ((NavHostFragment) currentFragment).getChildFragmentManager().getPrimaryNavigationFragment();
+
+                    if (navFragment instanceof HistoryFragment) {
+                        HistoryFragment historyFragment = (HistoryFragment) navFragment;
+                        FragmentManager childFragmentManager = historyFragment.getChildFragmentManager();
+
+                        // Get the current tab index
+                        ViewPager viewPager = historyFragment.getView().findViewById(R.id.record_vp_history);
+                        int currentTabIndex = viewPager.getCurrentItem();
+                        Log.d("currenttab", String.valueOf(currentTabIndex));
+
+                        // Retrieve the correct fragment using the adapter's tag
+                        String fragmentTag = historyFragment.getAdapter().getFragmentTag(currentTabIndex);
+                        Log.d("currenttab", fragmentTag);
+                        Fragment currentTabFragment = childFragmentManager.findFragmentByTag(fragmentTag);
+                        Log.d("CurrentTab", "Current Tab: " + (currentTabFragment != null ? currentTabFragment.getClass().getSimpleName() : "null"));
+                        if (currentTabFragment == null) {
+                            currentTabFragment = historyFragment.getAdapter().getItem(currentTabIndex);
+                            /*The fragment might not yet be attached to the FragmentManager when you're attempting to retrieve it. This can happen if:
+
+The fragment is still in the process of being created.
+The ViewPager hasn't fully initialized the fragment.*/
+                        }
+
+                        if (currentTabFragment instanceof ListHistoryFragmentExpend) {
+                            Log.d("Fragment Check", "This is ListHistoryFragmentExpend");
+                            ((ListHistoryFragmentExpend) currentTabFragment).onSearchQueryChanged(newText);
+                        } else if (currentTabFragment instanceof ListHistoryFragmentIncome) {
+                            Log.d("Fragment Check", "This is ListHistoryFragmentIncome");
+                            ((ListHistoryFragmentIncome) currentTabFragment).onSearchQueryChanged(newText);
+                        }
+                    }
+                }
+
+                return true;
+            }
+        });
+        return true;
     }
 
-    boolean isShown = true;
-    private void toggleShow() {
-        if (isShown){
-            PasswordTransformationMethod instance = PasswordTransformationMethod.getInstance();
-            topInTv.setTransformationMethod(instance);
-            topOutTv.setTransformationMethod(instance);
-            topbudgetTv.setTransformationMethod(instance);
-            topShowIv.setImageResource(R.mipmap.ih_hide);
-            isShown = false;
-        }else{
-            HideReturnsTransformationMethod instance = HideReturnsTransformationMethod.getInstance();
-            topInTv.setTransformationMethod(instance);
-            topOutTv.setTransformationMethod(instance);
-            topbudgetTv.setTransformationMethod(instance);
-            topShowIv.setImageResource(R.mipmap.ih_show);
-            isShown = true;
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        try{
+            Navigation.findNavController(this,R.id.NHFMain).navigate(item.getItemId());
+            return true;
         }
+        catch (Exception ex){
+            return super.onOptionsItemSelected(item);}
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return Navigation.findNavController(this,R.id.NHFMain).navigateUp();
     }
 
 

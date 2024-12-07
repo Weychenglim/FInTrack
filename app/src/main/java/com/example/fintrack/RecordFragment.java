@@ -1,15 +1,15 @@
 package com.example.fintrack;
 
 import android.os.Bundle;
-import android.view.View;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.example.fintrack.adapter.RecordPagerAdapter;
 import com.example.fintrack.fragment.IncomeFragment;
@@ -19,37 +19,42 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordActivity extends AppCompatActivity {
+
+public class RecordFragment extends Fragment {
 
     TabLayout tabLayout;
     ViewPager viewPager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_record);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    }
 
-        tabLayout = findViewById(R.id.record_tabs);
-        viewPager = findViewById(R.id.record_vp);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_record, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        tabLayout = view.findViewById(R.id.record_tabs);
+        viewPager = view.findViewById(R.id.record_vp);
 
         initPager();
     }
 
     private void initPager(){
 
-        List<Fragment>fragmentList = new ArrayList<>();
+        List<Fragment> fragmentList = new ArrayList<>();
         OutcomeFragment outFrag = new OutcomeFragment();
         IncomeFragment inFrag = new IncomeFragment();
         fragmentList.add(outFrag);
         fragmentList.add(inFrag);
 
-        RecordPagerAdapter pagerAdapter = new RecordPagerAdapter(getSupportFragmentManager(), fragmentList);
+        RecordPagerAdapter pagerAdapter = new RecordPagerAdapter(getChildFragmentManager(), fragmentList);
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -66,10 +71,4 @@ public class RecordActivity extends AppCompatActivity {
          transitions.*/
     }
 
-    public void onClick(View view) {
-            if (view.getId() == R.id.record_iv_close){
-                finish();
-            }
-        }
-    }
-
+}

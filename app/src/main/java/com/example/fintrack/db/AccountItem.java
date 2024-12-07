@@ -9,6 +9,7 @@ public class AccountItem {
 
     double money;
 
+
     public double getMoney() {
         return money;
     }

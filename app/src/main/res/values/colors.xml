@@ -2,10 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="grey_f3f3f3">#F3F3F3</color>
+    <color name="grey_f3f3f3">#f3f3f3</color>
     <color name="grey_7D7D7D">#7D7D7D</color>
     <color name="purple">#9966ff</color>
     <color name="grey_808080">#808080</color>
+    <color name="grey_c2d6d6">#c2d6d6</color>
     <color name="green_006400">#006400</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="blue_005ce6">#005ce6</color>
@@ -14,4 +15,6 @@
     <color name="forgotpassword">#50D2C9</color>
     <color name="signup">#13484F</color>
     <color name="white_F0F4F2">#F0F4F2</color>
+    <color name="red">#cc3300</color>
+    <color name="green_5cd65c">#009900</color>
 </resources>

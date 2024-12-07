@@ -6,11 +6,15 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -52,7 +56,6 @@ public abstract class BaseRecordFragment extends Fragment implements View.OnClic
         accountItem.setSimageId(R.mipmap.ic_other_fs);
     }
 
-    private KeyboardUtils keyboardUtils; // Custom keyboard
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -115,8 +118,7 @@ public abstract class BaseRecordFragment extends Fragment implements View.OnClic
     }
 
 
-    private void initView(View view){
-        keyboardView = view.findViewById(R.id.frag_record_keyboard);
+    private void initView(View view) {
         moneyEt = view.findViewById(R.id.frag_record_et_money);
         typeIv = view.findViewById(R.id.frag_record_iv);
         typeGv = view.findViewById(R.id.frag_record_gv);
@@ -126,34 +128,82 @@ public abstract class BaseRecordFragment extends Fragment implements View.OnClic
         remarkTv.setOnClickListener(this);
         timeTv.setOnClickListener(this);
 
-        KeyboardUtils boardUtils = new KeyboardUtils(keyboardView, moneyEt);
-        boardUtils.showKeyboard();
-        boardUtils.setOnEnsureListener(new KeyboardUtils.OnEnsureListener() {
+        moneyEt.setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL); // Ensure numeric input
+        moneyEt.setImeOptions(EditorInfo.IME_ACTION_DONE); // Set action to "Done"
+
+        // Add a listener for the "Done" action on the default keyboard
+        moneyEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onEnsure() {
-                String moneyStr = moneyEt.getText().toString();
-
-                // Check if input is empty or 0
-                if (TextUtils.isEmpty(moneyStr) || moneyStr.equals("0")) {
-                    // Handle the case where input is empty or 0, if needed
-                    return;
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    handleInputLogic(); // Call the logic when "Done" is pressed
+                    return true; // Indicate that the action was handled
                 }
-
-                try {
-                    // Try parsing the input as a double
-                    double money = Double.parseDouble(moneyStr);
-                    accountItem.setMoney(money);
-                    saveAccountToDB();
-                    getActivity().finish();
-
-                    // Do something with the valid number, if necessary
-                } catch (NumberFormatException e) {
-                    // Input is not a valid double, show an error message
-                    Toast.makeText(moneyEt.getContext(), "Invalid input. Please enter a valid number.", Toast.LENGTH_SHORT).show();
-                }
+                return false;
             }
         });
 
+        // Optional: Add a TextWatcher to handle changes in the input text dynamically
+        moneyEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed before text changes
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Optionally handle real-time input validation here
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed after text changes
+            }
+        });
+    }
+
+        // Method to handle input validation and processing
+        private void handleInputLogic() {
+            String moneyStr = moneyEt.getText().toString();
+
+            // Check if input is empty or 0
+            if (TextUtils.isEmpty(moneyStr) || moneyStr.equals("0")) {
+                Toast.makeText(moneyEt.getContext(), "Please enter a valid amount.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            try {
+                // Parse the input as a double
+                double money = Double.parseDouble(moneyStr);
+                accountItem.setMoney(money); // Save to the account object
+                saveAccountToDB(); // Save to the database
+                Toast.makeText(moneyEt.getContext(), "Record saved successfully.", Toast.LENGTH_SHORT).show();
+
+                // Clear the input fields
+                resetForm();
+
+            } catch (NumberFormatException e) {
+                // Show error if the input is not a valid number
+                Toast.makeText(moneyEt.getContext(), "Invalid input. Please enter a valid number.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    // Method to reset the form
+    private void resetForm() {
+        moneyEt.setText(""); // Clear the input field
+        remarkTv.setText(""); // Clear the input field
+        TimeZone timeZone = TimeZone.getTimeZone("GMT+8");
+
+        // Get the current date and time with the specified time zone
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        sdf.setTimeZone(timeZone);
+
+        // Format the date according to the time zone
+        String time = sdf.format(date);
+        timeTv.setText(time);
+        moneyEt.requestFocus();
+        // Set focus back to the input field
     }
 
     public abstract void saveAccountToDB();

@@ -10,7 +10,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:id="@+id/item_mainlv_iv"
-        android:src="@mipmap/ic_lifestyle_fs"/>
+        android:src="@mipmap/in_other2_fs"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -20,18 +20,18 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/item_mainlv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/item_mainlv_title"
-            android:text="Beverages"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:text="Other"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/item_mainlv_tv_remark"
-            android:text="A cup of coffee"
+            android:text="Pocket Money"
             android:layout_marginTop="5dp"
             android:textSize="12sp"/>
 
@@ -46,14 +46,14 @@
             android:id="@+id/item_mainlv_tv_money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RM 5.00"
+            android:text="RM 100.00"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/item_mainlv_tv_time"
-            android:text="Today 10:00"
+            android:text="Today 13:00"
             android:layout_marginTop="5dp" />
     </LinearLayout>
 </RelativeLayout>

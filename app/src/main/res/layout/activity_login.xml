@@ -22,9 +22,10 @@
 
         android:transitionName="splash_image"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"/>
+        android:textColor="@color/teal_700"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/appfont"/>
 
     <ImageView
         android:layout_width="wrap_content"

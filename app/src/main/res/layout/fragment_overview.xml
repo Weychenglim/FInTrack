@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".overview.OverviewFragment"
+    android:background="@color/grey_f3f3f3">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="10dp"
+        android:layout_marginTop="12dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/overview_tv_month"
+            android:text="October 2024 Expense"
+            android:textColor="@color/teal_700"
+            android:textStyle="bold"
+            android:textSize="17sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/overview_tv_expense"
+            android:text="Total Expense  -  RM0.00"
+            android:textSize="15sp"
+            android:textColor="@color/grey_7D7D7D"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/overview_tv_income"
+            android:text="Total Income    -  RM0.00"
+            android:textSize="15sp"
+            android:textColor="@color/grey_7D7D7D"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="13dp"
+        android:gravity="center">
+         <androidx.appcompat.widget.AppCompatButton
+             android:layout_width="wrap_content"
+             android:layout_height="35dp"
+             android:id="@+id/overview_btn_expend"
+             android:text="Expend"
+             android:textStyle="bold"
+             android:layout_marginRight="10dp"
+             android:background="@drawable/overview_button1"
+             android:textColor="@color/white"/>
+         <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:id="@+id/overview_btn_income"
+            android:text="Income"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/overview_button2"
+            android:textColor="@color/teal_700"/>
+    </LinearLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/overview_vp"
+        android:contentDescription="Overview"/>
+</LinearLayout>

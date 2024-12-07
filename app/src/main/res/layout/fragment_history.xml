@@ -1,0 +1,31 @@
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:background="@color/grey_f3f3f3"
+tools:context=".history.HistoryFragment">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/record_tabs_history"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabTextColor="@color/grey_7D7D7D"
+        app:tabSelectedTextColor="@color/teal_700"
+        app:tabIndicatorColor="@color/teal_700" />
+</RelativeLayout>
+
+<androidx.viewpager.widget.ViewPager
+    android:id="@+id/record_vp_history"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:contentDescription="Record"/>
+</LinearLayout>

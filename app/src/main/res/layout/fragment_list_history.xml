@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".history.ListHistoryFragment"
+    android:background="@color/grey_f3f3f3">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <TextView
+            android:id="@+id/dateTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/grey_7D7D7D"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:text=""/>
+        <ListView
+            android:id="@+id/main_lv_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/dateTv"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="2dp"
+            android:divider="@null"
+            android:dividerHeight="6dp"
+            android:scrollbars="vertical"
+            android:background="@color/grey_f3f3f3">
+        </ListView>
+
+        <ImageButton
+            android:id="@+id/toPdfBtn"
+            android:layout_width="68dp"
+            android:layout_height="71dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/pdf_button"
+            android:contentDescription="pdf icon"
+            android:src="@drawable/pdf_document_svgrepo_com" />
+
+    </RelativeLayout>
+
+</FrameLayout>

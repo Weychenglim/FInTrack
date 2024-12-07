@@ -90,6 +90,12 @@ public class AccountAdapter extends BaseAdapter {
         String formattedMoney = String.format("RM %.2f", accountItem.getMoney());
         holder.moneyTv.setText(formattedMoney);
 
+        if (accountItem.getKind() == 0) {
+            holder.moneyTv.setTextColor(context.getResources().getColor(R.color.red)); // Use red color for kind == 0
+        } else if (accountItem.getKind() == 1) {
+            holder.moneyTv.setTextColor(context.getResources().getColor(R.color.green_5cd65c)); // Use green color for kind == 1
+        }
+
         // If the date matches today, display "Today" and the time; otherwise, display full date and time
         if (accountItem.getYear() == year && accountItem.getMonth() == month && accountItem.getDay() == day) {
             String time = accountItem.getTime().split("\\s+")[1]; // Extract time part from the timestamp
@@ -99,6 +105,12 @@ public class AccountAdapter extends BaseAdapter {
         }
 
         return convertView; // Return the view for the current list item
+    }
+
+    public void updateData(List<AccountItem> newData) {
+        mDatas.clear();
+        mDatas.addAll(newData);
+        notifyDataSetChanged();
     }
 
     // ViewHolder pattern to cache views for each item, improving performance
