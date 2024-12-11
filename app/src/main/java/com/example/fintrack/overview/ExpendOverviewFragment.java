@@ -1,5 +1,6 @@
 package com.example.fintrack.overview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,58 +10,113 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fintrack.R;
+import com.example.fintrack.adapter.OverviewItemAdapter;
+import com.example.fintrack.db.DBManager;
+import com.example.fintrack.db.OverviewItem;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ExpendOverviewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ExpendOverviewFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ExpendOverviewFragment extends BaseOverviewFragment {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ExpendOverviewFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ExpendOverviewFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ExpendOverviewFragment newInstance(String param1, String param2) {
-        ExpendOverviewFragment fragment = new ExpendOverviewFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    int kind = 0;
+    public void onResume() {
+        super.onResume();
+        loadData(year,month,kind);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    protected void setAxisData(int year, int month) {
+        List<IBarDataSet> sets = new ArrayList<>();
+
+        // Retrieve data for the specific year, month, and kind
+        List<OverviewItem> list = DBManager.getSumMoneyOneDayInMonth(year, month, kind);
+
+        if (list.size() == 0) {
+            barChart.setVisibility(View.GONE); // Hide the chart if no data
+            overviewTv.setVisibility(View.VISIBLE); // Show a message instead
+        } else {
+            barChart.setVisibility(View.VISIBLE); // Show the chart
+            overviewTv.setVisibility(View.GONE); // Hide the message
+
+            // Initialize a list of BarEntries with 31 days set to 0
+            List<BarEntry> barEntries1 = new ArrayList<>();
+            for (int i = 0; i < 31; i++) {
+                barEntries1.add(new BarEntry(i, 0.0f));
+            }
+
+            // Populate BarEntries with data from the list
+            for (OverviewItem item : list) {
+                int day = item.getDay();
+                int xIndex = day - 1;
+                BarEntry barEntry = barEntries1.get(xIndex);
+                barEntry.setY((float) item.getSum()); // Set the value for each day
+            }
+
+            BarDataSet barDataSet1 = new BarDataSet(barEntries1, "");
+            barDataSet1.setValueTextColor(Color.parseColor("#FF00FF"));
+            barDataSet1.setValueTextSize(10f);
+            barDataSet1.setColor(Color.RED);
+
+            // Set the value formatter using the new ValueFormatter
+            barDataSet1.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    // Display value only if it's greater than 0
+                    return value == 0 ? "" : String.valueOf(value);
+                }
+            });
+
+            sets.add(barDataSet1);
+
+            // Create BarData and configure it
+            BarData barData = new BarData(sets);
+            barData.setBarWidth(0.3f); // Set the width of each bar
+            barChart.setData(barData);
         }
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_expend_overview, container, false);
+    protected void setYAxis(int year, int month) {
+        // Get the highest income day of the current month and set it as the maximum value for the y-axis
+        float maxMoney = DBManager.getMaxMoneyOneDayInMonth(year, month, kind);
+        float max = (float) Math.ceil(maxMoney);   // Round the maximum amount up
+// Set the y-axis
+        YAxis yAxis_right = barChart.getAxisRight();
+        yAxis_right.setAxisMaximum(max);  // Set the maximum value for the right y-axis
+        yAxis_right.setAxisMinimum(0f);  // Set the minimum value for the right y-axis
+        yAxis_right.setEnabled(false);  // Disable the right y-axis display
+
+        YAxis yAxis_left = barChart.getAxisLeft();
+        yAxis_left.setAxisMaximum(max);
+        yAxis_left.setAxisMinimum(0f);
+        yAxis_left.setEnabled(false);
+
+        // Disable the legend display
+        Legend legend = barChart.getLegend();
+        legend.setEnabled(false);
+
+    }
+
+    @Override
+    public void setDate(int year, int month) {
+        super.setDate(year, month);
+        if (mDatas == null) {
+            mDatas = new ArrayList<>();
+            overviewItemAdapter = new OverviewItemAdapter(getContext(),mDatas);
+        }
+        loadData(year,month,kind);
+
     }
 }

@@ -8,6 +8,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.fintrack.doubleUtils;
+import com.example.fintrack.overview.OverviewItemType;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,4 +147,59 @@ public class DBManager {
         String sql = "delete from accounttb";
         db.execSQL(sql);
     }
+
+    public static int getCountItemOneMonth(int year, int month, int kind){
+        int total = 0;
+        String sql = "select count(money) from accounttb where year=? and month=? and kind=?";
+        Cursor cursor = db.rawQuery(sql,new String[] {year + "", +month + "", + kind + ""});
+        if (cursor.moveToFirst()){
+            total = cursor.getInt(cursor.getColumnIndexOrThrow("count(money)"));  //COUNT(money) counts how many rows have a non-null value in the money column
+        }
+        return total;
+    }
+
+    public static List<OverviewItemType>getOverviewListFromAccounttb(int year,int month,int type){
+        List<OverviewItemType>list = new ArrayList<>();
+        double sumMoneyPerMonth = getSumMoneyPerMonth(year,month,type);
+        String sql = "select typename,sImageId,sum(money)as total,kind from accounttb where year=? and month=? and kind=? group by typename " +
+                "order by total desc";
+        Cursor cursor = db.rawQuery(sql, new String[]{year + "", month + "", type + ""});
+        while (cursor.moveToNext()) {
+            int sImageId = cursor.getInt(cursor.getColumnIndexOrThrow("sImageId"));
+            String typename = cursor.getString(cursor.getColumnIndexOrThrow("typename"));
+            double total = cursor.getFloat(cursor.getColumnIndexOrThrow("total"));
+            // total /sumMonth
+            double percentage = doubleUtils.div(total,sumMoneyPerMonth);
+            int kind = cursor.getInt(cursor.getColumnIndexOrThrow("kind"));
+            OverviewItemType type1 = new OverviewItemType(sImageId, typename, percentage, total,kind);
+            list.add(type1);
+        }
+        return list;
+    }
+
+    public static float getMaxMoneyOneDayInMonth(int year,int month,int kind){
+        String sql = "select sum(money) from accounttb where year=? and month=? and kind=? group by day order by sum(money) desc";
+        Cursor cursor = db.rawQuery(sql, new String[]{year + "", month + "", kind + ""});
+        if (cursor.moveToFirst()) {
+            float money = cursor.getFloat(cursor.getColumnIndexOrThrow("sum(money)"));
+            return money;
+        }
+        return 0;
+    }
+
+    public static List<OverviewItem>getSumMoneyOneDayInMonth(int year,int month,int kind){
+        String sql = "select day,sum(money) from accounttb where year=? and month=? and kind=? group by day";
+        Cursor cursor = db.rawQuery(sql, new String[]{year + "", month + "", kind + ""});
+        List<OverviewItem>list = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            int day = cursor.getInt(cursor.getColumnIndexOrThrow("day"));
+            float smoney = cursor.getFloat(cursor.getColumnIndexOrThrow("sum(money)"));
+            OverviewItem itemBean = new OverviewItem(year, month, day, smoney);
+            list.add(itemBean);
+        }
+        return list;
+    }
+
+
 }
+

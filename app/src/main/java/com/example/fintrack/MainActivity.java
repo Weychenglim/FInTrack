@@ -1,29 +1,16 @@
 package com.example.fintrack;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,20 +21,16 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.fintrack.adapter.AccountAdapter;
-import com.example.fintrack.db.AccountItem;
-import com.example.fintrack.db.DBManager;
 import com.example.fintrack.history.HistoryFragment;
-import com.example.fintrack.history.ListHistoryFragment;
+import com.example.fintrack.history.HistoryViewModel;
 import com.example.fintrack.history.ListHistoryFragmentExpend;
 import com.example.fintrack.history.ListHistoryFragmentIncome;
 import com.example.fintrack.history.SelectDateHistory;
-import com.example.fintrack.utils.BudgetDialog;
+import com.example.fintrack.overview.OverviewViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.kal.rackmonthpicker.RackMonthPicker;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity  {
@@ -106,16 +89,42 @@ public class MainActivity extends AppCompatActivity  {
                 calendarItem.setVisible(false);// Hide search button
             }
         });
-        SharedViewModel viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        HistoryViewModel viewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        OverviewViewModel overviewViewModel = new ViewModelProvider(this).get(OverviewViewModel.class);
 
         calendarItem.setOnMenuItemClickListener(item -> {
-            SelectDateHistory dialog = new SelectDateHistory(this);
-            dialog.show();
+            if (navController.getCurrentDestination() != null) {
+                int currentDestinationId = navController.getCurrentDestination().getId();
 
-            dialog.setOnEnsureListener((time, year, month, day) -> {
-                viewModel.setDateData(new SharedViewModel.DateData(time, year, month, day));
-            });
+                if (currentDestinationId == R.id.history) {
+                    // Show dialog for selecting Year, Month, and Day
+                    SelectDateHistory dialog = new SelectDateHistory(this);
+                    dialog.show();
 
+                    dialog.setOnEnsureListener((time, year, month, day) -> {
+                        viewModel.setDateData(new HistoryViewModel.DateData(time, year, month, day));
+                    });
+
+                } else if (currentDestinationId == R.id.overview) {
+                    RackMonthPicker rackMonthPicker = new RackMonthPicker(
+                            new ContextThemeWrapper(this, R.style.RackMonthPickerTheme)
+                    );
+
+                    rackMonthPicker
+                            .setLocale(Locale.ENGLISH)
+                            .setPositiveText("Select")
+                            .setNegativeText("Cancel")// This should now work properly
+                            .setPositiveButton((month, startDate, endDate, year, monthLabel) -> {
+                                overviewViewModel.setDateData(new OverviewViewModel.DateData(year, month));
+                                Log.d("ff",String.valueOf(month)+ year);
+                            })
+                            .setNegativeButton(dialog -> {
+                                rackMonthPicker.dismiss();
+                            })
+                            .show();
+                }
+
+            }
             return true;
         });
 

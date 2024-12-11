@@ -1,6 +1,5 @@
 package com.example.fintrack.history;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,18 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fintrack.R;
-import com.example.fintrack.SharedViewModel;
 import com.example.fintrack.adapter.AccountAdapter;
 import com.example.fintrack.db.AccountItem;
-import com.example.fintrack.db.DBManager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ListHistoryFragment extends Fragment {
@@ -61,7 +58,7 @@ public class ListHistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
-        SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        HistoryViewModel viewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
         viewModel.getDateData().observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
                 dateTv.setText(data.time);
@@ -105,6 +102,8 @@ This does not re-initialize or recall onViewCreated(). Instead, the observer mer
                 }
             }
         });
+        loadData(Calendar.getInstance().get(Calendar.YEAR),Calendar.getInstance().get(Calendar.MONTH)+1,Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        dateTv.setText(Calendar.getInstance().get(Calendar.YEAR) + " - " + (Calendar.getInstance().get(Calendar.MONTH)+1) + " - " + Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
     }
 
 

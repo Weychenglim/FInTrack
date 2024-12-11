@@ -3,8 +3,6 @@
         <item name="colorPrimary">@color/teal_200</item>
         <item name="colorOnPrimary">@color/white</item>
 
-
-
         <!-- Status bar color -->
         <item name="android:statusBarColor">@color/teal_200</item>
         <item name="android:windowLightStatusBar">true</item>

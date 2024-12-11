@@ -1,4 +1,8 @@
 <resources>
-    <!-- Custom style for DatePicker -->
-
+    <style name="RackMonthPickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/darknavy</item>
+        <item name="colorAccent">@color/teal_200</item>
+        <item name="android:windowMinWidthMajor">90%</item> <!-- Adjust width if needed -->
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
 </resources>

@@ -21,7 +21,8 @@
             android:text="October 2024 Expense"
             android:textColor="@color/teal_700"
             android:textStyle="bold"
-            android:textSize="17sp"/>
+            android:textSize="17sp"
+            android:layout_marginBottom="5dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

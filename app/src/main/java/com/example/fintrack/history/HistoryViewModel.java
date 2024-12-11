@@ -1,10 +1,10 @@
-package com.example.fintrack;
+package com.example.fintrack.history;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SharedViewModel extends ViewModel {
+public class HistoryViewModel extends ViewModel {
     private final MutableLiveData<DateData> dateData = new MutableLiveData<>();
 
     public LiveData<DateData> getDateData() {
