@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Saving.FragmentCreateSaving"
+    android:background="@color/grey_f3f3f3"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/saving1"
+        android:layout_marginTop="35dp"/>
+
+    <TextView
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:text="You don’t have to see the whole staircase, just take the first step  -  Martin Luther King, Jr."
+        android:layout_marginTop="15dp"
+        android:textColor="@color/grey_7D7D7D"/>
+
+    <RelativeLayout
+        android:layout_width="330dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/overview_button1">
+
+        <TextView
+            android:id="@+id/PriorityTv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Select priority for your goal"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/Highbtn"
+            android:layout_width="80dp"
+            android:layout_height="42dp"
+            android:layout_below="@+id/PriorityTv1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/teal_200"
+            android:text="High"
+            android:textColor="@color/white"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/Normalbtn"
+            android:layout_width="98dp"
+            android:layout_height="42dp"
+            android:layout_below="@+id/PriorityTv1"
+            android:layout_toRightOf="@+id/Highbtn"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="15dp"
+            android:text="Normal"
+            android:background="@color/teal_200"
+            android:textColor="@color/white"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/Lowbtn"
+            android:layout_width="80dp"
+            android:layout_height="42dp"
+            android:layout_below="@+id/PriorityTv1"
+            android:layout_toRightOf="@+id/Normalbtn"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="15dp"
+            android:text="Low"
+            android:background="@color/teal_200"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/goal"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/savingedittext"
+        android:padding="10dp"
+        android:drawableLeft="@drawable/piggy_bank"
+        android:drawablePadding="12dp"
+        android:hint="Goal Title"/>
+
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/savingedittext"
+        android:padding="10dp"
+        android:drawableLeft="@drawable/amount"
+        android:drawablePadding="12dp"
+        android:hint="Target Amount"/>
+
+
+    <EditText
+        android:id="@+id/duration"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/savingedittext"
+        android:padding="10dp"
+        android:drawableLeft="@drawable/duration"
+        android:drawablePadding="12dp"
+        android:hint="Duration in Days"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/saving_btn_submit"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/overview_button1"
+        android:gravity="center"
+        android:text="Submit"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

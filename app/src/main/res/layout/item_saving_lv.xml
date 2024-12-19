@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:padding="10dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:background="@drawable/saving_listview">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:layout_centerHorizontal="true"
+        android:max="100"
+        android:progress="45"/>
+
+    <ImageView
+        android:id="@+id/target_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/target_arrow_svgrepo_com"
+        android:layout_below="@+id/progress"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/goal_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/target_icon"
+        android:text="Mobile Phone"
+        android:layout_marginTop="20dp"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/goal_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/goal_title"
+        android:text="RM400.00"
+        android:layout_marginTop="2dp"
+        android:textSize="33dp"
+        android:textColor="@color/white"
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/goal_priority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/goal_amount"
+        android:layout_alignParentRight="true"
+        android:text="Normal Priority"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/white"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/goal_daysleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/goal_priority"
+        android:layout_alignParentRight="true"
+        android:text="40 Days Left"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/white"
+        android:textSize="15sp"/>
+</RelativeLayout>

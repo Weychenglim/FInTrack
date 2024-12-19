@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Saving.SavingTransactionFragment"
+    android:background="@color/grey_f3f3f3">
+
+    <ListView
+        android:id="@+id/savingtransaction_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:divider="@null"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:dividerHeight="5dp"
+        android:scrollbars="vertical"
+        android:background="@color/grey_f3f3f3">
+    </ListView>
+
+    <Button
+        android:id="@+id/savingtransaction_btn_record"
+        android:layout_width="116dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/main_recordbtn_bg"
+        android:drawableLeft="@mipmap/edit"
+        android:gravity="center_vertical"
+        android:text="Record"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

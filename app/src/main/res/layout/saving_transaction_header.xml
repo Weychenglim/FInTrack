@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="185dp"
+        android:padding="8dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/saving_listview"
+        android:id="@+id/savingheader_header1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/savingTv1"
+            android:text="You've Saved"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:textSize="17sp"/>
+
+        <TextView
+            android:id="@+id/savingheader_currentamount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/savingTv1"
+            android:text="RM400.00"
+            android:layout_marginTop="2dp"
+            android:textSize="42dp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/savingheader_goalamount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/savingheader_currentamount"
+            android:text="Out of RM800.00"
+            android:layout_marginTop="3dp"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/savingheader_progress"
+            android:layout_centerHorizontal="true"
+            android:max="100"
+            android:progress="45"
+            android:layout_below="@+id/savingheader_goalamount"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"/>
+
+
+        <TextView
+            android:id="@+id/savingheader_daysLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/savingheader_progress"
+            android:layout_alignParentRight="true"
+            android:text="50% | 40 Days Left"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_marginTop="7dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:layout_below="@+id/savingheader_header1"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/saving_listview">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/savingHeader_priority"
+            android:text="Goal Priority is Normal"
+            android:drawableLeft="@drawable/priority_icon"
+            android:drawablePadding="7dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+</RelativeLayout>

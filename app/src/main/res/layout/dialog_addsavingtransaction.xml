@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/moneyicon"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:src="@drawable/savinggoal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/saving_goal_tv"
+        android:text="Log a New Saving Contribution"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/moneyicon"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="55dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/saving_goal_amount_left_tv"
+        android:layout_below="@+id/saving_goal_tv"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginRight="60dp"
+        android:text="Keep going! You're only RM 200.00 away from your goal."
+        android:textColor="@color/grey_7D7D7D"
+        android:textSize="15sp"/>
+
+
+    <EditText
+        android:layout_width="280dp"
+        android:layout_height="48dp"
+        android:id="@+id/saving_goal_et"
+        android:hint="Enter an Amount"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="40dp"
+        android:padding="5dp"
+        android:textSize="15sp"
+        android:background="@drawable/savingedittext"
+        android:layout_marginLeft="55dp"
+        android:layout_below="@+id/saving_goal_amount_left_tv">
+        <!--keyboard show up automatically-->
+    </EditText>
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/saving_goal_et"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="5dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/saving_transaction_cancel"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="Cancel"
+            android:textStyle="bold"
+            android:textColor="@color/green_006400" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/saving_transaction_confirm"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Confirm"
+            android:background="@drawable/main_recordbtn_bg"
+            android:textStyle="bold"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</RelativeLayout>
+
+
