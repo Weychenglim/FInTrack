@@ -18,7 +18,7 @@
         tools:layout="@layout/fragment_record" />
     <fragment
         android:id="@+id/saving"
-        android:name="com.example.fintrack.SavingFragment"
+        android:name="com.example.fintrack.Saving.SavingFragment"
         android:label="Saving Goals"
         tools:layout="@layout/fragment_saving" />
     <fragment
@@ -36,6 +36,16 @@
         android:name="com.example.fintrack.overview.OverviewFragment"
         android:label="Overview"
         tools:layout="@layout/fragment_overview" />
+    <fragment
+        android:id="@+id/fragmentCreateSaving"
+        android:name="com.example.fintrack.Saving.FragmentCreateSaving"
+        android:label="It's time to save !"
+        tools:layout="@layout/fragment_create_saving" />
+    <fragment
+        android:id="@+id/savingTransactionFragment"
+        android:name="com.example.fintrack.Saving.SavingTransactionFragment"
+        android:label="Goal Information"
+        tools:layout="@layout/fragment_saving_transaction" />
 
 
 </navigation>

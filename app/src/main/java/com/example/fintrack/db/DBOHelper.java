@@ -27,11 +27,14 @@ public class DBOHelper extends SQLiteOpenHelper {
 //  Database will be created when we run it the first time
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         String sql = "CREATE table typetb(id integer primary key autoincrement, typename varchar(10), imageId integer, sImageId integer, kind integer)";
         db.execSQL(sql);
         insertType(db);
         sql = "CREATE table accounttb(id integer primary key autoincrement, typename varchar(10), sImageId integer,  remark varchar(80), money double, time varchar(60), year integer, month integer, day integer, kind integer)";
+        db.execSQL(sql);
+        sql = "CREATE table savingtb(id integer primary key autoincrement, goaltitle varchar(50), amount double, duration integer, priority integer, creation_date DATE, amountleft double, percentage double)";
+        db.execSQL(sql);
+        sql = "CREATE table savingtransactiontb(id integer primary key autoincrement, amount double,  transaction_date DATETIME,saving_id integer, FOREIGN KEY (saving_id) REFERENCES savingtb (id))";
         db.execSQL(sql);
     }
 
@@ -68,7 +71,5 @@ public class DBOHelper extends SQLiteOpenHelper {
     // Used when updating the database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS typetb");
-        db.execSQL("DROP TABLE IF EXISTS accounttb");
-        onCreate(db);    }
+    }
 }

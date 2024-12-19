@@ -7,13 +7,18 @@ import android.database.ContentObservable;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.fintrack.doubleUtils;
 import com.example.fintrack.overview.OverviewItemType;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DBManager {
 
@@ -199,6 +204,180 @@ public class DBManager {
         }
         return list;
     }
+
+    public static List<AccountItem> getSortedAccountList() {
+        List<AccountItem> accountList = new ArrayList<>();
+
+        // Query to fetch and sort data
+        String query = "SELECT typename, remark, money, time, year, month, day, kind " +
+                "FROM accounttb ORDER BY kind, year, month, day, time";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                AccountItem item = new AccountItem();
+                item.setTypename(cursor.getString(0));
+                item.setRemark(cursor.getString(1));
+                item.setMoney(cursor.getDouble(2));
+                item.setTime(cursor.getString(3));
+                item.setYear(cursor.getInt(4));
+                item.setMonth(cursor.getInt(5));
+                item.setDay(cursor.getInt(6));
+                item.setKind(cursor.getInt(7));
+                accountList.add(item);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return accountList;
+    }
+
+    public static void saveSavingGoal(Context context, String title, String amountStr,String durationStr, String selectedPriority) {
+
+        if (title.isEmpty() || amountStr.isEmpty() || durationStr.isEmpty()) {
+            Toast.makeText(context , "All fields are required!", Toast.LENGTH_SHORT).show();
+            return;
+        }else if(selectedPriority == null){
+            Toast.makeText(context , "Please select a priority for your goal!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            // Parse the values
+            double amount = Double.parseDouble(amountStr);
+            int duration = Integer.parseInt(durationStr);
+
+            int priority = selectedPriority.equals("High") ? 1 : selectedPriority.equals("Normal") ? 2 : 3;
+
+            String sql = "INSERT INTO savingtb (goaltitle, amount, duration, priority, creation_date, amountleft, percentage) " +
+                    "VALUES (?, ?, ?, ?, date('now'), ?, 0.0)";
+            db.execSQL(sql, new Object[]{title, amount, duration, priority, amount});
+            Toast.makeText(context, "Saving goal created!", Toast.LENGTH_SHORT).show();
+        } catch (NumberFormatException e) {
+            // Show a Toast message for invalid input
+            Toast.makeText(context, "Please enter valid numerical values for amount and duration.", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public static List<SavingItem> getSavingGoals() {
+        List<SavingItem> list = new ArrayList<>();
+        String sql = "SELECT id, goaltitle, amount, amountleft, duration, priority, creation_date FROM savingtb ORDER BY priority ASC, id DESC";
+        Cursor cursor = db.rawQuery(sql, null);
+
+        long currentTimeMillis = System.currentTimeMillis();
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.setTimeInMillis(currentTimeMillis);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String goalTitle = cursor.getString(cursor.getColumnIndexOrThrow("goaltitle"));
+            double goalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
+            double amountLeft = cursor.getDouble(cursor.getColumnIndexOrThrow("amountleft"));
+            int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duration"));
+            int priority = cursor.getInt(cursor.getColumnIndexOrThrow("priority"));
+            String creationDateStr = cursor.getString(cursor.getColumnIndexOrThrow("creation_date"));
+
+            // Calculate amount (goal amount - amount left)
+            double amount = goalAmount - amountLeft;
+
+            // Parse creation_date into a Calendar object
+            Calendar creationDate = Calendar.getInstance();
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                creationDate.setTime(sdf.parse(creationDateStr));
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            // Calculate days left
+            long durationMillis = duration * 24L * 60 * 60 * 1000; // Duration in milliseconds
+            long endDateMillis = creationDate.getTimeInMillis() + durationMillis;
+            long timeLeftMillis = endDateMillis - currentTimeMillis;
+
+            // Adding a half-day offset to round up if there is a partial day
+            long daysLeft = (timeLeftMillis + (12 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000);
+
+            // Calculate percentage (amount / goal amount)
+            double percentage = (goalAmount > 0) ? (amount / goalAmount) * 100 : 0;
+
+            // Create SavingItem instance
+            SavingItem savingItem = new SavingItem(id, goalTitle, amount,String.valueOf(daysLeft), priority, percentage,goalAmount,amountLeft);
+            list.add(savingItem);
+        }
+        cursor.close(); // Always close the cursor after use
+        return list;
+    }
+
+    public static void addTransactionRecord(double amount, int savingId) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String currentDateTime = sdf.format(new Date());
+
+
+        String sql = "INSERT INTO savingtransactiontb ( amount, transaction_date, saving_id) VALUES (?, ?, ?)";
+
+        try {
+            db.execSQL(sql, new Object[]{amount, currentDateTime, savingId});
+            Log.d("DBManager", "Transaction record added successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("DBManager", "Error while adding transaction record: " + e.getMessage());
+        }
+    }
+
+
+    public static List<SavingTransactionItem> getSavingTransaction(int saving_idcurrent) {
+        List<SavingTransactionItem> list = new ArrayList<>();
+        String sql = "SELECT amount, transaction_date FROM savingtransactiontb WHERE saving_id = ? ORDER BY transaction_date DESC";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(saving_idcurrent)});
+        while (cursor.moveToNext()) {
+            double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
+            String transactionDate = cursor.getString(cursor.getColumnIndexOrThrow("transaction_date"));
+
+            // Create a new SavingTransactionItem and add it to the list
+            SavingTransactionItem transaction = new SavingTransactionItem(transactionDate, amount);
+            list.add(transaction);
+        }
+        cursor.close(); // Always close the cursor to release resources
+        return list;
+    }
+
+    public static void updateSavingGoal(int savingId) {
+        // Query the total sum of transactions for the given saving_id
+        String transactionSumSql = "SELECT SUM(amount) AS totalTransactions FROM savingtransactiontb WHERE saving_id = ?";
+        Cursor transactionCursor = db.rawQuery(transactionSumSql, new String[]{String.valueOf(savingId)});
+
+        if (transactionCursor.moveToFirst()) {
+            double totalTransactions = transactionCursor.getDouble(transactionCursor.getColumnIndexOrThrow("totalTransactions"));
+
+            // Query the original amount and current amount left for the saving goal
+            String savingGoalSql = "SELECT amount FROM savingtb WHERE id = ?";
+            Cursor savingGoalCursor = db.rawQuery(savingGoalSql, new String[]{String.valueOf(savingId)});
+
+            if (savingGoalCursor.moveToFirst()) {
+                double totalAmount = savingGoalCursor.getDouble(savingGoalCursor.getColumnIndexOrThrow("amount"));
+
+                // Calculate the new amount left
+                double updatedAmountLeft = totalAmount - totalTransactions;
+                updatedAmountLeft = Math.max(0, updatedAmountLeft); // Ensure it doesn't go below 0
+
+                // Calculate the updated percentage
+                double updatedPercentage = ((totalAmount - updatedAmountLeft) / totalAmount) * 100;
+
+                // Update the savingtb table with the new values
+                String updateSql = "UPDATE savingtb SET amountleft = ?, percentage = ? WHERE id = ?";
+                db.execSQL(updateSql, new Object[]{updatedAmountLeft, updatedPercentage, savingId});
+            }
+
+            savingGoalCursor.close(); // Close the cursor for savingtb
+        }
+
+        transactionCursor.close(); // Close the cursor for savingtransactiontb
+    }
+
 
 
 }

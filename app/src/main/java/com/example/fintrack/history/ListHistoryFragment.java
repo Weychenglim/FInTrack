@@ -1,9 +1,12 @@
 package com.example.fintrack.history;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,11 +18,15 @@ import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.fintrack.PDFGenerator;
 import com.example.fintrack.R;
 import com.example.fintrack.adapter.AccountAdapter;
 import com.example.fintrack.db.AccountItem;
+import com.example.fintrack.db.DBManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -104,6 +111,15 @@ This does not re-initialize or recall onViewCreated(). Instead, the observer mer
         });
         loadData(Calendar.getInstance().get(Calendar.YEAR),Calendar.getInstance().get(Calendar.MONTH)+1,Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         dateTv.setText(Calendar.getInstance().get(Calendar.YEAR) + " - " + (Calendar.getInstance().get(Calendar.MONTH)+1) + " - " + Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+
+        toPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Pdfclicked","clickPDF");
+                PDFGenerator.createPDF(requireContext(), DBManager.getSortedAccountList());
+            }
+        });
+
     }
 
 

@@ -230,6 +230,7 @@ public abstract class BaseRecordFragment extends Fragment implements View.OnClic
                 accountItem.setDay(day);
             }
         });
+
     }
 
     private void showRemarkDialog() {
