@@ -7,8 +7,20 @@ public class SavingItem {
     double amount;
     double targetAmount;
 
+    String status;
+
+    String imageUri;
+
     public double getAmountLeft() {
         return amountLeft;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void setAmountLeft(double amountLeft) {
@@ -73,7 +85,7 @@ public class SavingItem {
         this.targetAmount = targetAmount;
     }
 
-    public SavingItem(int id, String goalTitle, double amount, String dayLeft, int priority, double percentage, double targetAmount,double amountLeft) {
+    public SavingItem(int id, String goalTitle, double amount, String dayLeft, int priority, double percentage, double targetAmount, double amountLeft, String status, String imageUri) {
         this.id = id;
         this.goalTitle = goalTitle;
         this.amount = amount;
@@ -82,10 +94,21 @@ public class SavingItem {
         this.percentage = percentage;
         this.targetAmount = targetAmount;
         this.amountLeft = amountLeft;
+        this.status = status;
+        this.imageUri=imageUri;
     }
 
     String dayLeft;
     int priority;
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
     double percentage;
 
 

@@ -1,6 +1,10 @@
 package com.example.fintrack.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +17,9 @@ import com.example.fintrack.R;
 import com.example.fintrack.db.AccountItem;
 import com.example.fintrack.db.SavingItem;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 
@@ -73,16 +80,37 @@ public class SavingAdapter extends BaseAdapter {
 
 
         SavingItem savingItem = mDatas.get(position);
-
         holder.title.setText(savingItem.getGoalTitle());
         holder.amount.setText("RM " + String.valueOf(String.format("%.2f",savingItem.getAmount())));
         holder.priority.setText(savingItem.getPriority() == 1 ? "High Priority" : savingItem.getPriority() == 2 ? "Normal Priority" : "Low Priority");
-        holder.daysLeft.setText(savingItem.getDayLeft() + " Days Left");
+            if (savingItem.getStatus().equals("Completed")){
+                holder.daysLeft.setText("Completed");
+                holder.daysLeft.setTextColor(context.getResources().getColor(R.color.green_bright));
+            }else if (savingItem.getStatus().equals("Expired")){
+                holder.daysLeft.setText("Expired");
+                holder.daysLeft.setTextColor(context.getResources().getColor(R.color.red_bright));
+            }else{
+                holder.daysLeft.setText(savingItem.getDayLeft() + " Days Left");
+            }
+        String imageUriString = savingItem.getImageUri();
+        if (imageUriString != null) {
+            Log.d("dsdf","ImageURI");
+            Uri imageUri = Uri.parse(imageUriString);
+            try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                holder.icon.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }// Set the image in ImageView
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            holder.icon.setImageResource(R.drawable.target_arrow_svgrepo_com); // Default image
+        }
         int progress = (int) Math.round(savingItem.getPercentage());
         progress = Math.max(0, Math.min(100, progress)); // Clamp between 0 and 100
         holder.progress.setProgress(progress);
-
-
         return convertView; // Return the view for the current list item
     }
 

@@ -1,11 +1,13 @@
 package com.example.fintrack;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.fintrack.Saving.SavingFragment;
 import com.example.fintrack.history.HistoryFragment;
 import com.example.fintrack.history.HistoryViewModel;
 import com.example.fintrack.history.ListHistoryFragmentExpend;
@@ -264,6 +267,4 @@ The ViewPager hasn't fully initialized the fragment.*/
     public boolean onSupportNavigateUp() {
         return Navigation.findNavController(this,R.id.NHFMain).navigateUp();
     }
-
-
 }

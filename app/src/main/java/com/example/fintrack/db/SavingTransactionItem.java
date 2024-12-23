@@ -5,6 +5,16 @@ public class SavingTransactionItem {
 
     String date;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    int id;
+
     public double getAmount() {
         return amount;
     }
@@ -21,8 +31,9 @@ public class SavingTransactionItem {
         this.date = date;
     }
 
-    public SavingTransactionItem(String date, double amount) {
+    public SavingTransactionItem(String date, double amount, int id) {
         this.date = date;
         this.amount = amount;
+        this.id = id;
     }
 }

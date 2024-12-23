@@ -1,12 +1,21 @@
 package com.example.fintrack.Saving;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +24,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.fintrack.R;
 import com.example.fintrack.adapter.AccountAdapter;
@@ -28,6 +38,9 @@ import java.util.List;
 
 public class SavingFragment extends Fragment {
 
+    private static final int REQUEST_CODE_READ_STORAGE = 101;
+    private static final int PICK_IMAGE_REQUEST = 102;
+
     List<SavingItem> mDatas;
     SavingAdapter savingAdapter;
 
@@ -39,6 +52,7 @@ public class SavingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestStoragePermission();
     }
 
     @Override
@@ -92,7 +106,6 @@ public class SavingFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SavingItem clickItem = mDatas.get(position);
                 currentItem = clickItem;
-                Log.d("df",clickItem.getGoalTitle());
                 Bundle bundle = new Bundle();
                 bundle.putInt("saving_id",clickItem.getId());
                 bundle.putDouble("amount", clickItem.getAmount());
@@ -101,14 +114,40 @@ public class SavingFragment extends Fragment {
                 bundle.putString("daysLeft",clickItem.getDayLeft());
                 bundle.putDouble("percentage", clickItem.getPercentage());
                 bundle.putInt("priority", clickItem.getPriority());
+                bundle.putString("status",clickItem.getStatus());
                 Navigation.findNavController(view).navigate(R.id.savingTransactionFragment,bundle);
             }
         });
+
+        savingLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                SavingItem clickItem = mDatas.get(position);
+                showDeleteItemDialog(clickItem);
+                return true;
+            }
+        });
+    }
+
+    private void showDeleteItemDialog(SavingItem clickItem) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Notification").setMessage("Do you really want to delete this saving goal?").setNegativeButton("Cancel", null).setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int clickId = clickItem.getId();
+                DBManager.deleteFromSavingTbById(clickId);
+                DBManager.deleteFromSavingTransactionTbById(clickId);
+                mDatas.remove(clickItem);
+                savingAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.create().show();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("Resume", "Resume");
         loadDBData();
     }
 
@@ -116,8 +155,37 @@ public class SavingFragment extends Fragment {
 
     private void loadDBData() {
         List<SavingItem> list = DBManager.getSavingGoals();
+        for (SavingItem item : list) {
+            // Retrieve the URI and validate it
+            String uriString = item.getImageUri();
+            if (uriString != null) {
+                Uri imageUri = Uri.parse(uriString);
+                // Check if the URI is accessible
+                try {
+                    requireContext().getContentResolver().openInputStream(imageUri).close();
+                    Log.d("dsf", "Successful");
+                } catch (Exception e) {
+                    imageUri = null; // Reset if inaccessible
+                    Log.d("dsf", "Failed");
+                }
+                item.setImageUri(imageUri != null ? imageUri.toString() : null);
+            }
+        }
         mDatas.clear();
         mDatas.addAll(list);
         savingAdapter.notifyDataSetChanged();
     }
+
+
+    private void requestStoragePermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_CODE_READ_STORAGE);
+        } else {
+
+        }
+    }
+
 }

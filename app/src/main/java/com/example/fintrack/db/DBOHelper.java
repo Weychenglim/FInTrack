@@ -32,7 +32,7 @@ public class DBOHelper extends SQLiteOpenHelper {
         insertType(db);
         sql = "CREATE table accounttb(id integer primary key autoincrement, typename varchar(10), sImageId integer,  remark varchar(80), money double, time varchar(60), year integer, month integer, day integer, kind integer)";
         db.execSQL(sql);
-        sql = "CREATE table savingtb(id integer primary key autoincrement, goaltitle varchar(50), amount double, duration integer, priority integer, creation_date DATE, amountleft double, percentage double)";
+        sql = "CREATE table savingtb(id integer primary key autoincrement, goaltitle varchar(50), amount double, duration integer, priority integer, creation_date DATE, amountleft double, percentage double, status varchar(20),image_uri TEXT)";
         db.execSQL(sql);
         sql = "CREATE table savingtransactiontb(id integer primary key autoincrement, amount double,  transaction_date DATETIME,saving_id integer, FOREIGN KEY (saving_id) REFERENCES savingtb (id))";
         db.execSQL(sql);

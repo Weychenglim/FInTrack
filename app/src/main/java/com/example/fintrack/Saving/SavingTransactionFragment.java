@@ -1,5 +1,7 @@
 package com.example.fintrack.Saving;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -48,7 +51,7 @@ public class SavingTransactionFragment extends Fragment {
     TextView currentAmount, goalAmount, daysLeftHeader, priorityHeader;
     ProgressBar progressBar;
     double amount, amountLeft,targetAmount,percentage;
-    String daysLeft;
+    String daysLeft,status;
     int priority, saving_id;
     SavingTransactionDialog dialog;
 
@@ -114,7 +117,7 @@ public class SavingTransactionFragment extends Fragment {
             percentage = getArguments().getDouble("percentage");
             priority = getArguments().getInt("priority");
             saving_id = getArguments().getInt(("saving_id"));
-
+            status = getArguments().getString("status");
             // Populate the header view
             populateHeaderView(amount, amountLeft, targetAmount,daysLeft, percentage,priority);
         }
@@ -124,13 +127,67 @@ public class SavingTransactionFragment extends Fragment {
         savingTransactionRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(status.equals("Expired") || status.equals("Completed")){
+                    Toast.makeText(requireContext(), "Current saving goal is no longer valid", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 showSavingTransactionDialog();
             }
         });
-        mDatas = new ArrayList<>();
-        savingTransactionAdapter = new SavingTransactionAdapter(requireContext(), mDatas);
-        savingTransactionLv.setAdapter(savingTransactionAdapter);
+        savingTransactionLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if(status.equals("Expired") || status.equals("Completed")){
+                    Toast.makeText(requireContext(), "Current saving goal is no longer valid", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                int pos = position-1;
+                SavingTransactionItem clickItem = mDatas.get(pos);
+                showDeleteItemDialog(clickItem);
+                return false;
+            }
+        });
     }
+
+    private void showDeleteItemDialog(SavingTransactionItem clickItem) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Notification")
+                .setMessage("Do you really want to delete this transaction?")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int clickId = clickItem.getId();
+                        DBManager.deleteFromSavingTransactionTbBySavingTransactionId(clickId);
+
+                        // Remove the item from the list
+                        mDatas.remove(clickItem);
+                        savingTransactionAdapter.notifyDataSetChanged();
+
+                        // Update the header values
+                        updateHeaderValues();
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void updateHeaderValues() {
+        // Query the database for updated amount and amountLeft
+        double newAmount = DBManager.getTotalTransactionsForSaving(saving_id); // Adjust this method in DBManager
+        double newAmountLeft = targetAmount - newAmount;
+
+        // Recalculate percentage
+        double newPercentage = (targetAmount > 0) ? (newAmount / targetAmount) * 100 : 0;
+
+        // Update the header view
+        populateHeaderView(newAmount, newAmountLeft, targetAmount, daysLeft, newPercentage, priority);
+
+        // Update local variables
+        amount = newAmount;
+        amountLeft = newAmountLeft;
+        percentage = newPercentage;
+    }
+
 
     private void loadDBData() {
         List<SavingTransactionItem> list = DBManager.getSavingTransaction(saving_id);
@@ -201,6 +258,10 @@ public class SavingTransactionFragment extends Fragment {
                     double amount = Double.parseDouble(inputText);
                     if (amount <= 0) {
                         Toast.makeText(requireContext(), "Amount must be greater than zero.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(amount>=amountLeft){
+                        Toast.makeText(requireContext(), "Amount exceeds the remaining amount for current saving gaol.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     DBManager.addTransactionRecord(amount, saving_id);

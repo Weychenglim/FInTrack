@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="260dp"
     android:padding="10dp"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
@@ -18,12 +18,12 @@
 
     <ImageView
         android:id="@+id/target_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:src="@drawable/target_arrow_svgrepo_com"
         android:layout_below="@+id/progress"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/goal_title"
@@ -43,7 +43,7 @@
         android:layout_below="@+id/goal_title"
         android:text="RM400.00"
         android:layout_marginTop="2dp"
-        android:textSize="33dp"
+        android:textSize="35dp"
         android:textColor="@color/white"
         android:layout_marginLeft="10dp"
         android:textStyle="bold"/>
@@ -57,7 +57,7 @@
         android:text="Normal Priority"
         android:layout_marginRight="10dp"
         android:textColor="@color/white"
-        android:textSize="15sp"/>
+        android:textSize="17sp"/>
 
     <TextView
         android:id="@+id/goal_daysleft"
@@ -68,5 +68,5 @@
         android:text="40 Days Left"
         android:layout_marginRight="10dp"
         android:textColor="@color/white"
-        android:textSize="15sp"/>
+        android:textSize="17sp"/>
 </RelativeLayout>

@@ -18,4 +18,6 @@
     <color name="red">#cc3300</color>
     <color name="green_5cd65c">#009900</color>
     <color name="darknavy">#003326</color>
+    <color name="red_bright">#ff0000</color>
+    <color name="green_bright">#66ff33</color>
 </resources>
