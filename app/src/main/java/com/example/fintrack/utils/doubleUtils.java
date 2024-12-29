@@ -1,4 +1,4 @@
-package com.example.fintrack;
+package com.example.fintrack.utils;
 
 import java.math.BigDecimal;
 

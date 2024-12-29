@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SignUp"
+    tools:context=".authentication.SignUp"
     android:background="@color/white_F0F4F2">
 
     <ImageView
@@ -23,7 +23,7 @@
         android:text="Welcome Onboard !"
         android:textAlignment="center"
         android:textColor="@color/teal_700"
-        android:textSize="35sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         android:transitionName="splash_image"
         android:fontFamily="@font/appfont"/>
@@ -36,11 +36,12 @@
         android:text="Let’s help you meet up your tasks"
         android:textAlignment="center"
         android:textColor="@color/green_006400"
-        android:textSize="23sp"
-        android:transitionName="splash_text"
+        android:textSize="28sp"
+        android:transitionName="splash_image"
         android:fontFamily="@font/appfont"/>
 
     <EditText
+        android:id="@+id/ETUsername"
         android:layout_width="360dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
@@ -51,6 +52,7 @@
         android:background="@drawable/rectangle2"/>
 
     <EditText
+        android:id="@+id/ETSignupEmail"
         android:layout_width="360dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
@@ -61,6 +63,7 @@
         android:background="@drawable/rectangle2"/>
 
     <EditText
+        android:id="@+id/ETSignupPassword"
         android:layout_width="360dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
@@ -71,6 +74,7 @@
         android:background="@drawable/rectangle2"/>
 
     <EditText
+        android:id="@+id/ETSignupPasswordConfirm"
         android:layout_width="360dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
@@ -81,13 +85,14 @@
         android:background="@drawable/rectangle2"/>
 
     <Button
+        android:id="@+id/btnSignup"
         android:layout_width="360dp"
         android:layout_height="60dp"
         android:background="@drawable/rectangle1"
         android:layout_marginTop="35dp"
         android:text="Sign Up"
         android:layout_gravity="center_horizontal"
-        android:textSize="25sp"
+        android:textSize="28sp"
         android:textStyle="bold"/>
 
     <LinearLayout
@@ -101,7 +106,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="Already have an Account?"/>
+            android:text="Already have an Account?"
+            android:textSize="17sp"/>
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -109,12 +115,13 @@
             android:layout_marginStart="8dp">
 
             <TextView
-                android:id="@+id/login_button"
+                android:id="@+id/TVLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:minWidth="48dp"
                 android:text="Sign in"
-                android:textColor="@color/forgotpassword"
+                android:textSize="17sp"
+                android:textColor="@color/blue_50D2C9"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"

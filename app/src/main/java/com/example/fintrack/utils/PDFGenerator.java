@@ -1,4 +1,4 @@
-package com.example.fintrack;
+package com.example.fintrack.utils;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.example.fintrack.fragment;
+package com.example.fintrack.record;
 
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -24,9 +23,7 @@ import android.widget.Toast;
 
 import com.example.fintrack.R;
 import com.example.fintrack.db.AccountItem;
-import com.example.fintrack.db.DBManager;
 import com.example.fintrack.db.TypeItem;
-import com.example.fintrack.utils.KeyboardUtils;
 import com.example.fintrack.utils.RemarkDialog;
 import com.example.fintrack.utils.SelectTimeDialog;
 

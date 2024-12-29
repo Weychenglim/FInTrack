@@ -1,9 +1,4 @@
-package com.example.fintrack.fragment;
-
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+package com.example.fintrack.record;
 
 import androidx.fragment.app.Fragment;
 

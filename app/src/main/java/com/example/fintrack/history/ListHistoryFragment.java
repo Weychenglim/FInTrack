@@ -1,12 +1,9 @@
 package com.example.fintrack.history;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,15 +15,13 @@ import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.fintrack.PDFGenerator;
+import com.example.fintrack.utils.PDFGenerator;
 import com.example.fintrack.R;
 import com.example.fintrack.adapter.AccountAdapter;
 import com.example.fintrack.db.AccountItem;
 import com.example.fintrack.db.DBManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;

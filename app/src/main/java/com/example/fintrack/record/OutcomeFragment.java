@@ -1,10 +1,9 @@
-package com.example.fintrack.fragment;
+package com.example.fintrack.record;
 
 import com.example.fintrack.R;
 import com.example.fintrack.db.DBManager;
 import com.example.fintrack.db.TypeItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OutcomeFragment extends BaseRecordFragment

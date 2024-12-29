@@ -13,9 +13,6 @@ import android.view.ViewGroup;
 
 import com.example.fintrack.R;
 import com.example.fintrack.adapter.HistoryPagerAdapter;
-import com.example.fintrack.adapter.RecordPagerAdapter;
-import com.example.fintrack.fragment.IncomeFragment;
-import com.example.fintrack.fragment.OutcomeFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

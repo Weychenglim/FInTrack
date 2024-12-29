@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".SettingFragment"
+    tools:context=".setting.SettingFragment"
     android:background="@color/grey_f3f3f3">
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,4 +1,4 @@
-package com.example.fintrack.fragment;
+package com.example.fintrack.record;
 
 import android.content.Context;
 import android.view.LayoutInflater;

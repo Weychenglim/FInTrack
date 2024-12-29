@@ -12,12 +12,13 @@
     <color name="blue_005ce6">#005ce6</color>
     <color name="teal_700">#FF018786</color>
     <color name="blue_b3f0ff">#b3f0ff</color>
-    <color name="forgotpassword">#50D2C9</color>
-    <color name="signup">#13484F</color>
+    <color name="blue_50D2C9">#50D2C9</color>
+    <color name="green_13484F">#13484F</color>
     <color name="white_F0F4F2">#F0F4F2</color>
     <color name="red">#cc3300</color>
     <color name="green_5cd65c">#009900</color>
     <color name="darknavy">#003326</color>
     <color name="red_bright">#ff0000</color>
     <color name="green_bright">#66ff33</color>
+    <color name="lavender">#8692f7</color>
 </resources>

@@ -1,13 +1,11 @@
-package com.example.fintrack;
+package com.example.fintrack.main;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -23,7 +21,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.fintrack.Saving.SavingFragment;
+import com.example.fintrack.R;
 import com.example.fintrack.history.HistoryFragment;
 import com.example.fintrack.history.HistoryViewModel;
 import com.example.fintrack.history.ListHistoryFragmentExpend;
@@ -31,6 +29,7 @@ import com.example.fintrack.history.ListHistoryFragmentIncome;
 import com.example.fintrack.history.SelectDateHistory;
 import com.example.fintrack.overview.OverviewViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
 import com.kal.rackmonthpicker.RackMonthPicker;
 
 import java.util.Locale;
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity  {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);   // the text on the tool bar is determined by the label in nav_graph
         setupBottomNavMenu(navController);
+        FirebaseApp.initializeApp(this);
     }
 
     private void setupBottomNavMenu(NavController navController){
@@ -76,25 +76,29 @@ public class MainActivity extends AppCompatActivity  {
         NavController navController = Navigation.findNavController(this, R.id.NHFMain);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         MenuItem calendarItem = menu.findItem(R.id.action_calendar);
+        MenuItem tipsItem = menu.findItem(R.id.action_tips);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             // Check if the current destination is the Home fragment
             if (destination.getId() == R.id.home) { // Replace with the actual ID of the Home fragment
                 searchItem.setVisible(true);
                 calendarItem.setVisible(false);// Show search button
+                tipsItem.setVisible(true);
             } else if (destination.getId() == R.id.history) {
                 searchItem.setVisible(true);
                 calendarItem.setVisible(true);
+                tipsItem.setVisible(false);
             }else if (destination.getId() == R.id.overview) {
                     searchItem.setVisible(false);
                     calendarItem.setVisible(true);
+                    tipsItem.setVisible(false);
             } else {
                 searchItem.setVisible(false);
-                calendarItem.setVisible(false);// Hide search button
+                calendarItem.setVisible(false);
+                tipsItem.setVisible(false);// Hide search button
             }
         });
         HistoryViewModel viewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
         OverviewViewModel overviewViewModel = new ViewModelProvider(this).get(OverviewViewModel.class);
-
         calendarItem.setOnMenuItemClickListener(item -> {
             if (navController.getCurrentDestination() != null) {
                 int currentDestinationId = navController.getCurrentDestination().getId();
@@ -138,6 +142,7 @@ public class MainActivity extends AppCompatActivity  {
             public boolean onMenuItemActionExpand(MenuItem item) {
                 // No changes needed when expanded
                 calendarItem.setVisible(false);
+                tipsItem.setVisible(false);
                 return true;
             }
 
@@ -147,7 +152,11 @@ public class MainActivity extends AppCompatActivity  {
                     // Check if the current destination is the Home fragment
                     if (destination.getId() == R.id.history) { // Replace with the actual ID of the Home fragment
                         calendarItem.setVisible(true);// Show search button
-                    }});
+                    }
+                    else if(destination.getId() == R.id.home){
+                        tipsItem.setVisible(true);
+                    }
+                });
                 // When collapsed, clear the search query and reset the list
                 Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.NHFMain);
                 if (currentFragment instanceof NavHostFragment) {

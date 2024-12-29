@@ -1,15 +1,22 @@
-package com.example.fintrack;
+package com.example.fintrack.main;
 
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -22,11 +29,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.fintrack.R;
 import com.example.fintrack.adapter.AccountAdapter;
 import com.example.fintrack.db.AccountItem;
 import com.example.fintrack.db.DBManager;
@@ -38,6 +45,7 @@ import java.util.List;
 
 public class Main_Fragment extends Fragment implements View.OnClickListener, MainActivity.OnSearchQueryListener {
 
+    private static final String PREF_FILE_NAME = "BudgetPrefs";
     ListView todayLv;
     List<AccountItem> mDatas;
 
@@ -73,7 +81,7 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
         super.onViewCreated(view, savedInstanceState);
         initTime();
         initView(view);
-        preferences = requireContext().getSharedPreferences("budget", MODE_PRIVATE);  /*This method retrieves and initialize a SharedPreferences instance that points to the file
+        preferences = requireContext().getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE);  /*This method retrieves and initialize a SharedPreferences instance that points to the file
         named "budget" where data can be stored. If this file doesn’t exist, Android will create it. file is private to the app*/
         todayLv = view.findViewById(R.id.main_lv);
         addLVHeaderView();
@@ -209,6 +217,7 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
         } else {
             float final_amount = amount_update - (float) expensePerMonth;
             topbudgetTv.setText("RM " + String.format("%.2f", final_amount));
+            checkNegativeBudget(final_amount);
         }
     }
 
@@ -233,27 +242,62 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
     }
 
     private void showBudgetDialog() {
-        BudgetDialog dialog = new BudgetDialog(requireContext()); // fragment use getContext() / requireContext()
+        BudgetDialog dialog = new BudgetDialog(requireContext());
         dialog.show();
         dialog.setDialogSize();
         dialog.setOnConfirmListener(new BudgetDialog.onConfirmListener() {
             @Override
             public void onConfirm(double amount) {
+                preferences = requireContext().getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                /*SharedPreferences in Android is a lightweight storage mechanism that allows you to store small amounts of data in key-value pairs.
-                It’s typically used for storing user preferences, settings, or other data that needs to persist across app sessions, even after the app
-                is closed. SharedPreferences is ideal for simple data types like boolean, int, float, long, and String. Data stored in SharedPreferences
-                 remains available until it is specifically cleared.*/
                 editor.putFloat("amount", (float) amount);
-                editor.commit();
+                editor.apply(); // Prefer apply() for asynchronous commits
 
+                // Calculate balance
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
                 double spending = DBManager.getSumMoneyPerMonth(year, month, 0);
                 double balance = amount - spending;
                 topbudgetTv.setText("RM " + String.format("%.2f", balance));
+
+                checkNegativeBudget(balance);
             }
         });
-
     }
+
+
+    private void checkNegativeBudget(double balance) {
+        if (balance < 0) {
+            Context context = requireContext();
+            String channelId = "negative_budget_channel";
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(
+                        channelId,
+                        "Negative Budget Alerts",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
+                NotificationManager manager = context.getSystemService(NotificationManager.class);
+                manager.createNotificationChannel(channel);
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher) // Replace with your app's icon
+                    .setContentTitle("Budget Overrun Alert")
+                    .setContentText("Your budget is negative: RM " + String.format("%.2f", balance))
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                Log.d("No permisiion","Notification");
+                return;
+            }
+            notificationManager.notify(1, builder.build());
+        }
+    }
+
 
     boolean isShown = true;
 

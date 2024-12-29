@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SplashScreen"
+    tools:context=".authentication.SplashScreen"
     android:background="@color/white_F0F4F2">
 
     <ImageView
@@ -41,7 +41,7 @@
         android:transitionName="splash_text"
         android:textAlignment="center"
         android:textColor="@color/teal_700"
-        android:textSize="70sp"
+        android:textSize="75sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

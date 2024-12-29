@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".UniteApp"
         android:allowBackup="true"
@@ -14,23 +16,26 @@
         android:theme="@style/Theme.FinTrack"
         tools:targetApi="31">
         <activity
-            android:name=".SignUp"
+            android:name=".authentication.SignUp"
             android:exported="false" />
         <activity
-            android:name=".login"
+            android:name=".authentication.ForgotPassword"
             android:exported="false" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".authentication.login"
+            android:exported="false" />
+        <activity
+            android:name=".authentication.SplashScreen"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -41,6 +46,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <receiver android:name=".utils.MyBroadcastReceiver" />
     </application>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 </manifest>

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".login"
+    tools:context=".authentication.login"
     android:orientation="vertical"
     android:background="@color/white_F0F4F2">
 
@@ -16,27 +16,28 @@
         android:src="@drawable/shape"/>
 
     <TextView
+        android:id="@+id/LoginWelcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Welcome Back !"
-
         android:transitionName="splash_image"
         android:textAlignment="center"
         android:textColor="@color/teal_700"
-        android:textSize="35sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         android:fontFamily="@font/appfont"/>
 
     <ImageView
+        android:id="@+id/LoginIv"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
-
         android:transitionName="splash_text"
         android:layout_marginTop="10dp"
         android:src="@drawable/saving" />
 
     <EditText
+        android:id="@+id/ETLoginEmail"
         android:layout_width="360dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
@@ -47,12 +48,14 @@
         android:background="@drawable/rectangle2"/>
 
     <EditText
+        android:id="@+id/ETLoginPassword"
         android:layout_width="360dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:paddingLeft="20dp"
         android:textSize="16sp"
         android:hint="Enter password"
+        android:inputType="textPassword"
         android:layout_marginTop="15dp"
         android:background="@drawable/rectangle2"/>
 
@@ -62,27 +65,28 @@
         android:layout_marginTop="8dp">
 
         <TextView
-            android:id="@+id/forgot_password_button"
+            android:id="@+id/TVForgotPassword"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center"
             android:text="Forgot Password"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="@color/forgotpassword"
+            android:textColor="@color/blue_50D2C9"
             android:clickable="true"
             android:focusable="true"
             android:background="?android:attr/selectableItemBackground" />
     </FrameLayout>
 
     <Button
+        android:id="@+id/btnLogin"
         android:layout_width="360dp"
         android:layout_height="60dp"
         android:background="@drawable/rectangle1"
         android:layout_marginTop="7dp"
         android:text="Sign In"
         android:layout_gravity="center_horizontal"
-        android:textSize="25sp"
+        android:textSize="27sp"
         android:textStyle="bold"/>
 
     <LinearLayout
@@ -96,7 +100,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="Not Register yet?" />
+            android:text="Not Register yet?"
+            android:textSize="17sp"/>
 
 
         <FrameLayout
@@ -105,12 +110,13 @@
             android:layout_marginStart="8dp">
 
             <TextView
-                android:id="@+id/signup_button"
+                android:id="@+id/TVGoSignup"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:minWidth="48dp"
                 android:text="Sign up"
-                android:textColor="@color/forgotpassword"
+                android:textSize="17sp"
+                android:textColor="@color/blue_50D2C9"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"

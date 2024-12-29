@@ -1,4 +1,4 @@
-package com.example.fintrack;
+package com.example.fintrack.record;
 
 import android.os.Bundle;
 
@@ -11,9 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.fintrack.R;
 import com.example.fintrack.adapter.RecordPagerAdapter;
-import com.example.fintrack.fragment.IncomeFragment;
-import com.example.fintrack.fragment.OutcomeFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

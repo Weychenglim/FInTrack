@@ -1,6 +1,7 @@
 package com.example.fintrack.Saving;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -136,6 +137,7 @@ public class FragmentCreateSaving extends Fragment implements View.OnClickListen
 
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

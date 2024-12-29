@@ -7,6 +7,12 @@
         app:showAsAction="always"
         />
     <item
+        android:id="@+id/action_tips"
+        android:icon="@drawable/bulb_on_svgrepo_com"
+        android:title="Tips"
+        app:showAsAction="always"
+        />
+    <item
         android:id="@+id/action_search"
         android:icon="@drawable/search"
         android:title="Search"

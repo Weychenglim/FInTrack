@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -44,6 +45,8 @@ dependencies {
     implementation ("com.github.voghDev:PdfViewPager:1.1.1")
     implementation ("com.itextpdf:itext7-core:7.2.3")
     implementation ("org.slf4j:slf4j-simple:2.0.9")
+    implementation ("androidx.work:work-runtime:2.8.1")
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

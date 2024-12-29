@@ -1,18 +1,15 @@
 package com.example.fintrack.db;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.ContentObservable;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.fintrack.doubleUtils;
+import com.example.fintrack.utils.doubleUtils;
 import com.example.fintrack.overview.OverviewItemType;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,11 +67,13 @@ public class DBManager {
 
     public static List<AccountItem> getAccountListOneDayFromAccounttb(int year, int month, int day) {
         List<AccountItem> list = new ArrayList<>();
-        String sql = "select * from accounttb where year=? and month=? and day=? order by id desc";
-        Cursor cursor = db.rawQuery(sql, new String[]{year + "", month + "", day + ""});
-        /*Each ? is a placeholder for a parameter, and new String[]{year + "", month + "", day + "", kind + ""} provides
-        values for each ?. If year = 2023, month = 11, day = 10, and kind = 1, the placeholders will be replaced
-        with "2023", "11", "10", and "1", respectively.*/
+
+        // Adjust the SQL query to sort by kind ASC, then time DESC, and finally id ASC
+        String sql = "select * from accounttb where year=? and month=? and day=? order by kind asc, time desc, id asc";
+
+        // Execute the query
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)});
+
         while (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             String typename = cursor.getString(cursor.getColumnIndexOrThrow("typename"));
@@ -83,11 +82,16 @@ public class DBManager {
             int sImageId = cursor.getInt(cursor.getColumnIndexOrThrow("sImageId"));
             int kind = cursor.getInt(cursor.getColumnIndexOrThrow("kind"));
             double money = cursor.getDouble(cursor.getColumnIndexOrThrow("money"));
+
+            // Construct AccountItem object and add it to the list
             AccountItem accountItem = new AccountItem(id, typename, sImageId, remark, time, money, year, month, day, kind);
             list.add(accountItem);
         }
+
+        cursor.close();
         return list;
     }
+
 
     public static double getSumMoneyPerDay(int year, int month, int day, int kind) {
         double total = 0.0;
@@ -162,6 +166,29 @@ public class DBManager {
         }
         return list;
     }
+
+    public static List<TipsItem> getTipsList() {
+        List<TipsItem> list = new ArrayList<>();
+        String query = "SELECT type, title, imageId, webLink FROM tipstb";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                int imageID = cursor.getInt(cursor.getColumnIndexOrThrow("imageId"));
+                String webLink = cursor.getString(cursor.getColumnIndexOrThrow("webLink"));
+
+                TipsItem tipsItem = new TipsItem(title, type, webLink, imageID);
+                list.add(tipsItem);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return list;
+    }
+
 
     public static double getTotalTransactionsForSaving(int savingId) {
         String sql = "SELECT SUM(amount) AS total FROM savingtransactiontb WHERE saving_id = ?";

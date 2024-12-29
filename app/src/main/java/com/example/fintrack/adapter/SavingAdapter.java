@@ -86,28 +86,40 @@ public class SavingAdapter extends BaseAdapter {
             if (savingItem.getStatus().equals("Completed")){
                 holder.daysLeft.setText("Completed");
                 holder.daysLeft.setTextColor(context.getResources().getColor(R.color.green_bright));
+                holder.priority.setText("");
             }else if (savingItem.getStatus().equals("Expired")){
                 holder.daysLeft.setText("Expired");
                 holder.daysLeft.setTextColor(context.getResources().getColor(R.color.red_bright));
+                holder.priority.setText("");
             }else{
                 holder.daysLeft.setText(savingItem.getDayLeft() + " Days Left");
             }
         String imageUriString = savingItem.getImageUri();
         if (imageUriString != null) {
-            Log.d("dsdf","ImageURI");
+            Log.d("ImageURI", "Image URI detected");
             Uri imageUri = Uri.parse(imageUriString);
             try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                holder.icon.setImageBitmap(bitmap);
+
+                // Convert 120dp to pixels
+                float density = context.getResources().getDisplayMetrics().density;
+                int widthPx = (int) (120 * density);
+                int heightPx = (int) (120 * density);
+
+                // Resize the bitmap
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
+
+                // Set the resized image in ImageView
+                holder.icon.setImageBitmap(resizedBitmap);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-            }// Set the image in ImageView
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
             holder.icon.setImageResource(R.drawable.target_arrow_svgrepo_com); // Default image
         }
+
         int progress = (int) Math.round(savingItem.getPercentage());
         progress = Math.max(0, Math.min(100, progress)); // Clamp between 0 and 100
         holder.progress.setProgress(progress);

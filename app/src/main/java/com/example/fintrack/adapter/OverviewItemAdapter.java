@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.fintrack.R;
-import com.example.fintrack.doubleUtils;
+import com.example.fintrack.utils.doubleUtils;
 import com.example.fintrack.overview.OverviewItemType;
 
 import java.util.List;
