@@ -8,11 +8,7 @@ import com.example.fintrack.db.TypeItem;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link IncomeFragment#} factory method to
- * create an instance of this fragment.
- */
+
 public class IncomeFragment extends BaseRecordFragment {
 
     @Override

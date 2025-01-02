@@ -24,11 +24,11 @@ import java.util.List;
 
 public class TipsFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    List<TipsItem> dataList;
-    TipsAdapter adapter;
+    RecyclerView recyclerView; // RecyclerView to display the list of tips
+    List<TipsItem> dataList; // List to store tips data
+    TipsAdapter adapter; // Adapter for binding data to the RecyclerView
 
-    SearchView searchView;
+    SearchView searchView; // SearchView for filtering tips by title
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,37 +45,64 @@ public class TipsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Initialize the RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
+
+        // Initialize the SearchView
         searchView = view.findViewById(R.id.search);
-        searchView.clearFocus();
+        searchView.clearFocus(); // Ensure the search bar doesn't have focus initially
+
+        // Set a listener to handle text changes in the SearchView
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                return false; // Do nothing on query submission
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
+                // Filter the list based on the entered text
                 searchList(newText);
                 return true;
             }
         });
+
+        // Set up the RecyclerView with a GridLayoutManager (1 column)
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
+
+        // Initialize the data list and load data from the database
         dataList = new ArrayList<>();
         dataList = DBManager.getTipsList();
+
+        // Initialize the adapter and bind it to the RecyclerView
         adapter = new TipsAdapter(requireContext(), dataList);
         recyclerView.setAdapter(adapter);
     }
-    private void searchList(String text){
+
+    /**
+     * Filters the list of tips based on the entered text.
+     * If no matches are found, a toast message is displayed.
+     *
+     * @param text the text entered in the SearchView
+     */
+    private void searchList(String text) {
+        // Temporary list to store matching items
         List<TipsItem> dataSearchList = new ArrayList<>();
-        for (TipsItem data : dataList){
+
+        // Iterate through the original list and find matches
+        for (TipsItem data : dataList) {
             if (data.getTitle().toLowerCase().contains(text.toLowerCase())) {
-                dataSearchList.add(data);
+                dataSearchList.add(data); // Add matching items to the temporary list
             }
         }
-        if (dataSearchList.isEmpty()){
+
+        // Handle the case where no matches are found
+        if (dataSearchList.isEmpty()) {
             Toast.makeText(requireContext(), "Not Found", Toast.LENGTH_SHORT).show();
         } else {
+            // Update the adapter with the filtered list
             adapter.setSearchList(dataSearchList);
         }
     }

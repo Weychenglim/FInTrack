@@ -32,9 +32,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fintrack.R;
 import com.example.fintrack.adapter.AccountAdapter;
+import com.example.fintrack.authentication.SignUp;
 import com.example.fintrack.db.AccountItem;
 import com.example.fintrack.db.DBManager;
 import com.example.fintrack.utils.BudgetDialog;
@@ -45,21 +47,22 @@ import java.util.List;
 
 public class Main_Fragment extends Fragment implements View.OnClickListener, MainActivity.OnSearchQueryListener {
 
+    // Constant for SharedPreferences file name
     private static final String PREF_FILE_NAME = "BudgetPrefs";
+
+    // UI Components
     ListView todayLv;
     List<AccountItem> mDatas;
-
     AccountAdapter adapter;
-
     int year, month, day;
 
+    // Overview TextViews and Buttons
     TextView overview1, overview2;
     Button record;
-
     View headerView;
 
+    // Top-level TextViews and ImageView
     TextView topOutTv, topInTv, topbudgetTv, topConTv, topConTv2;
-
     ImageView topShowIv;
 
     SharedPreferences preferences;
@@ -67,6 +70,7 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Fragment initialization logic
     }
 
     @Override
@@ -79,97 +83,108 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Initialize the current date
         initTime();
+
+        // Initialize views and setup event listeners
         initView(view);
-        preferences = requireContext().getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE);  /*This method retrieves and initialize a SharedPreferences instance that points to the file
-        named "budget" where data can be stored. If this file doesn’t exist, Android will create it. file is private to the app*/
+
+        // Initialize SharedPreferences for storing budget data
+        preferences = requireContext().getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE);
+
+        // Setup ListView and adapter
         todayLv = view.findViewById(R.id.main_lv);
-        addLVHeaderView();
+        addLVHeaderView(); // Add header to ListView
         mDatas = new ArrayList<>();
         adapter = new AccountAdapter(requireContext(), mDatas);
         todayLv.setAdapter(adapter);
     }
 
-
     private void initView(View view) {
+        // Initialize UI components
         todayLv = view.findViewById(R.id.main_lv);
         record = view.findViewById(R.id.main_btn_edit);
 
-        // Ensure the button is visible initially
+        // Set the button to be visible initially
         record.setVisibility(View.VISIBLE);
-        // Use a flag to prevent hiding the button during the initial rendering
+
+        // Add scroll listener to hide/show button based on scroll state
         todayLv.setOnScrollListener(new AbsListView.OnScrollListener() {
-            private boolean isInitialState = true; // Tracks whether it's the initial state
+            private boolean isInitialState = true;
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.d("ListenerCheck", "OnScroll Triggered");
-
+                // Handle scroll events, hiding button during scrolling
                 if (isInitialState) {
-                    Log.d("ListenerCheck", "Initial State - Do not hide button");
-                    return; // Do nothing during the initial state
+                    return; // Skip processing during the initial state
                 }
-
-                // Hide the button as soon as scrolling starts
                 if (totalItemCount > visibleItemCount) {
                     record.setVisibility(View.GONE);
-                    Log.d("ListenerCheck", "Set non-visible");
-                } else {
-                    Log.d("ListenerCheck", "List is not scrollable.");
                 }
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // Show button when scrolling stops
                 if (scrollState == SCROLL_STATE_IDLE) {
-                    record.setVisibility(View.VISIBLE); // Show the button when scrolling stops
-                    Log.d("ListenerCheck", "ScrollStateChanged Triggered: Button Visible");
+                    record.setVisibility(View.VISIBLE);
                 } else if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                    isInitialState = false; // User has started scrolling, mark initial state as finished
-                    Log.d("ListenerCheck", "User started scrolling, exiting initial state");
+                    isInitialState = false; // User starts scrolling, exiting initial state
                 }
             }
         });
 
+        // Set click listener for record button
         record.setOnClickListener(this);
+
+        // Set long click listener for ListView items
         setLVLongClickListener();
     }
 
     private void setLVLongClickListener() {
+        // Handle long clicks on ListView items to delete entries
         todayLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    return false;
+                    return false; // Ignore header click
                 }
-                int pos = position - 1;
+                int pos = position - 1; // Adjust for header offset
                 AccountItem clickItem = mDatas.get(pos);
-                showDeleteItemDialog(clickItem);
+                showDeleteItemDialog(clickItem); // Show confirmation dialog
                 return false;
             }
         });
     }
 
     private void showDeleteItemDialog(AccountItem clickItem) {
+        // Create and show a dialog to confirm deletion
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Notification").setMessage("Do you really want to delete this record?").setNegativeButton("Cancel", null).setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int clickId = clickItem.getId();
-                DBManager.deleteFromAccountTbById(clickId);
-                mDatas.remove(clickItem);
-                adapter.notifyDataSetChanged();
-                setTopTvShow();
-            }
-        });
+        builder.setTitle("Notification")
+                .setMessage("Do you really want to delete this record?")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Delete the item from database and update UI
+                        int clickId = clickItem.getId();
+                        DBManager.deleteFromAccountTbById(clickId);
+                        mDatas.remove(clickItem);
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(requireContext(), "Transaction record deleted successfully", Toast.LENGTH_SHORT).show();
+                        setTopTvShow(); // Refresh overview
+                    }
+                });
         builder.create().show();
     }
 
-
     private void addLVHeaderView() {
+        // Inflate and configure the ListView header
         headerView = getLayoutInflater().inflate(R.layout.item_mainlv_top, null);
         todayLv.addHeaderView(headerView);
 
+        // Initialize header components
         topOutTv = headerView.findViewById(R.id.item_mainlv_top_tv_out);
         topInTv = headerView.findViewById(R.id.item_mainlv_top_tv_in);
         topbudgetTv = headerView.findViewById(R.id.item_mainlv_top_tv_budget);
@@ -179,6 +194,7 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
         overview1 = headerView.findViewById(R.id.item_mainlv_top_overview1);
         overview2 = headerView.findViewById(R.id.item_mainlv_top_overview2);
 
+        // Set click listeners for header components
         topbudgetTv.setOnClickListener(this);
         headerView.setOnClickListener(this);
         topShowIv.setOnClickListener(this);
@@ -187,6 +203,7 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
     }
 
     private void initTime() {
+        // Get current date values
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH) + 1;
@@ -196,11 +213,13 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
     @Override
     public void onResume() {
         super.onResume();
+        // Reload data and refresh UI when fragment resumes
         loadDBData();
         setTopTvShow();
     }
 
     private void setTopTvShow() {
+        // Update the overview data with daily and monthly stats
         double incomePerDay = DBManager.getSumMoneyPerDay(year, month, day, 1);
         double expensePerDay = DBManager.getSumMoneyPerDay(year, month, day, 0);
         String infoPerDay = "Today's Expense  -   RM " + String.format("%.2f", expensePerDay);
@@ -217,11 +236,12 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
         } else {
             float final_amount = amount_update - (float) expensePerMonth;
             topbudgetTv.setText("RM " + String.format("%.2f", final_amount));
-            checkNegativeBudget(final_amount);
+            checkNegativeBudget(final_amount); // Notify user if budget is negative
         }
     }
 
     private void loadDBData() {
+        // Load daily data from the database and refresh the adapter
         List<AccountItem> list = DBManager.getAccountListOneDayFromAccounttb(year, month, day);
         mDatas.clear();
         mDatas.addAll(list);
@@ -230,30 +250,33 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
 
     @Override
     public void onClick(View v) {
+        // Handle click events for buttons and header components
         if (v.getId() == R.id.main_btn_edit) {
             Navigation.findNavController(v).navigate(R.id.recordFragment);
         } else if (v.getId() == R.id.item_main_top_Iv_hide) {
             toggleShow();
         } else if (v.getId() == R.id.item_mainlv_top_tv_budget) {
             showBudgetDialog();
-        } else if (v.getId() == R.id.item_mainlv_top_overview1 || v.getId() == R.id.item_mainlv_top_overview2){
+        } else if (v.getId() == R.id.item_mainlv_top_overview1 || v.getId() == R.id.item_mainlv_top_overview2) {
             Navigation.findNavController(v).navigate(R.id.overview);
         }
     }
 
     private void showBudgetDialog() {
+        // Show a dialog to update the budget
         BudgetDialog dialog = new BudgetDialog(requireContext());
         dialog.show();
         dialog.setDialogSize();
         dialog.setOnConfirmListener(new BudgetDialog.onConfirmListener() {
             @Override
             public void onConfirm(double amount) {
+                // Save the new budget value
                 preferences = requireContext().getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putFloat("amount", (float) amount);
-                editor.apply(); // Prefer apply() for asynchronous commits
+                editor.apply(); // Commit asynchronously
 
-                // Calculate balance
+                // Update budget balance and check for negative value
                 Calendar calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -266,8 +289,8 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
         });
     }
 
-
     private void checkNegativeBudget(double balance) {
+        // Notify the user if the budget goes negative
         if (balance < 0) {
             Context context = requireContext();
             String channelId = "negative_budget_channel";
@@ -283,7 +306,7 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
             }
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher) // Replace with your app's icon
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("Budget Overrun Alert")
                     .setContentText("Your budget is negative: RM " + String.format("%.2f", balance))
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -291,17 +314,16 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                Log.d("No permisiion","Notification");
                 return;
             }
             notificationManager.notify(1, builder.build());
         }
     }
 
-
     boolean isShown = true;
 
     private void toggleShow() {
+        // Toggle visibility of income, expense, and budget data
         if (isShown) {
             PasswordTransformationMethod instance = PasswordTransformationMethod.getInstance();
             topInTv.setTransformationMethod(instance);
@@ -319,26 +341,25 @@ public class Main_Fragment extends Fragment implements View.OnClickListener, Mai
         }
     }
 
-
     public void onSearchQueryChanged(String query) {
+        // Handle search query changes to filter ListView data
         if (adapter != null) {
             if (query.isEmpty()) {
-                // Restore the full list if the query is empty
-                loadDBData(); // This resets mDatas to the full original list
+                // Reset to full list if query is empty
+                loadDBData();
                 setTopTvShow();
             } else {
-                // Filter starting from the original full data list (mDatas)
+                // Filter the data based on the query
                 loadDBData();
                 List<AccountItem> filteredList = new ArrayList<>();
-                for (AccountItem item : mDatas) {  //The underlying behavior here is how mDatas is used for filtering: once it is filtered, it holds only the filtered results unless explicitly reset.
+                for (AccountItem item : mDatas) {
                     if (item.getTypename().toLowerCase().contains(query.toLowerCase())) {
                         filteredList.add(item);
                     }
                 }
-                // Update the adapter with the new filtered list
-                adapter.updateData(filteredList);
+                adapter.updateData(filteredList); // Update adapter with filtered data
             }
         }
     }
-
 }
+

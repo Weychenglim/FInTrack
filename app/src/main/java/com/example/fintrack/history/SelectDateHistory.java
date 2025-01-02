@@ -16,8 +16,8 @@ import com.example.fintrack.R;
 
 
 /*
- * This dialog allows users to select a date and time.
- * It is displayed on the record page.
+ * This dialog allows users to select a date .
+ * It is displayed on the history page
  */
 public class SelectDateHistory extends Dialog implements View.OnClickListener {
     DatePicker datePicker;

@@ -31,28 +31,24 @@ import com.example.fintrack.db.DBManager;
 
 public class FragmentCreateSaving extends Fragment implements View.OnClickListener {
 
-    private static final int REQUEST_CODE_READ_STORAGE = 101;
-    private static final int PICK_IMAGE_REQUEST = 1;
-    Button highBtn, normalBtn, lowBtn;
-    AppCompatButton submit;
+    private static final int REQUEST_CODE_READ_STORAGE = 101; // Code for storage permission request
+    private static final int PICK_IMAGE_REQUEST = 1; // Code for picking an image from the gallery
 
-    EditText goalTitle, targetAmount, duration;
+    Button highBtn, normalBtn, lowBtn; // Priority selection buttons
+    AppCompatButton submit; // Submit button
+    EditText goalTitle, targetAmount, duration; // Input fields for saving goal
+    TextView icon; // TextView to display selected icon/image status
 
-    TextView icon;
-
-    Uri selectedImageUri;
-
-    private String selectedPriority;
+    Uri selectedImageUri; // URI for the selected image
+    private String selectedPriority; // Selected priority level
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_create_saving, container, false);
     }
@@ -60,9 +56,10 @@ public class FragmentCreateSaving extends Fragment implements View.OnClickListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(view);
+        initView(view); // Initialize views and set up listeners
     }
 
+    // Initialize all views and set click listeners
     private void initView(View view) {
         highBtn = view.findViewById(R.id.Highbtn);
         normalBtn = view.findViewById(R.id.Normalbtn);
@@ -72,13 +69,13 @@ public class FragmentCreateSaving extends Fragment implements View.OnClickListen
         duration = view.findViewById(R.id.duration);
         submit = view.findViewById(R.id.saving_btn_submit);
         icon = view.findViewById(R.id.IconTv1);
+
         highBtn.setOnClickListener(this);
         normalBtn.setOnClickListener(this);
         lowBtn.setOnClickListener(this);
         submit.setOnClickListener(this);
         icon.setOnClickListener(this);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -102,41 +99,42 @@ public class FragmentCreateSaving extends Fragment implements View.OnClickListen
         }
     }
 
+    // Update UI to highlight the selected priority button and dim others
     private void updatePriorityUI(Button selected, Button... others) {
-        // Highlight the selected button
-        Drawable selectedBackground = selected.getBackground().mutate(); // Create a unique drawable instance
+        Drawable selectedBackground = selected.getBackground().mutate(); // Clone the drawable
         selectedBackground.setAlpha(255); // Fully opaque
-        selected.setBackground(selectedBackground); // Apply the updated background
+        selected.setBackground(selectedBackground); // Apply updated background to selected button
 
-        // Dim the other buttons
         for (Button btn : others) {
-            Drawable background = btn.getBackground().mutate(); // Create a unique drawable instance
+            Drawable background = btn.getBackground().mutate(); // Clone the drawable
             background.setAlpha(128); // Semi-transparent
-            btn.setBackground(background); // Apply the updated background
+            btn.setBackground(background); // Apply updated background to other buttons
         }
     }
+
+    // Request permission to access external storage
     private void requestStoragePermission() {
-        // Update permission request
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
+            // If permission is not granted, request it
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     REQUEST_CODE_READ_STORAGE);
         } else {
+            // If permission is granted, allow picking an image
             pickImageFromGallery();
         }
-
     }
 
+    // Launch an intent to pick an image from the gallery
     private void pickImageFromGallery() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false); // Optional: to allow single selection
+        intent.setType("image/*"); // Allow only image files
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
-
     }
 
+    // Handle the result of the image picker intent
     @SuppressLint("WrongConstant")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -144,10 +142,11 @@ public class FragmentCreateSaving extends Fragment implements View.OnClickListen
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             if (selectedImageUri != null) {
-                this.selectedImageUri = selectedImageUri;
-                icon.setText("Image Selected");
+                this.selectedImageUri = selectedImageUri; // Save the selected image URI
+                icon.setText("Image Selected"); // Update icon TextView
+
                 try {
-                    // Persist URI permissions
+                    // Persist URI permissions to maintain access even after app restarts
                     final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     requireContext().getContentResolver().takePersistableUriPermission(selectedImageUri, takeFlags);
                 } catch (SecurityException e) {
@@ -157,11 +156,12 @@ public class FragmentCreateSaving extends Fragment implements View.OnClickListen
         }
     }
 
-
+    // Handle the result of the permission request
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_READ_STORAGE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // If permission is granted, allow picking an image
             pickImageFromGallery();
         } else {
             Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
